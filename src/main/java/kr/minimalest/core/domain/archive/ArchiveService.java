@@ -17,7 +17,7 @@ public class ArchiveService {
 
     public ArchiveInfoResponse findArchiveInfo(String author) {
         Optional<Archive> optionalArchive = archiveRepository.findByAuthor(author);
-        Archive archive = optionalArchive.orElseThrow(() -> new EntityNotFoundException("해당 author의 아카이브는 존재하지 않습니다."));
+        Archive archive = optionalArchive.orElseThrow(() -> new EntityNotFoundException("해당 작가의 아카이브는 존재하지 않습니다!"));
         return ArchiveInfoResponse.builder()
                 .author(archive.getAuthor())
                 .mainTitle(archive.getMainTitle())
