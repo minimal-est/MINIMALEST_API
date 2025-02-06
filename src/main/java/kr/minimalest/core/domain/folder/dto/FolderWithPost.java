@@ -8,5 +8,6 @@ import lombok.Data;
 public class FolderWithPost {
 
     private Long postId;
+    private Long folderId;
     private String title;
 }

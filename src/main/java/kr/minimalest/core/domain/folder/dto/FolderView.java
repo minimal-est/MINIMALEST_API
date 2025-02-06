@@ -23,9 +23,10 @@ public class FolderView {
         this.name = name;
         this.depth = depth;
         this.parentId = parentId;
-        this.children = new ArrayList<>();
         this.isRoot = isRoot;
         this.isLeaf = isLeaf;
+
+        this.children = new ArrayList<>();
         this.posts = new ArrayList<>();
     }
 }
