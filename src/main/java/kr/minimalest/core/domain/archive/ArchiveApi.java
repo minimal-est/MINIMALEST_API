@@ -1,10 +1,12 @@
 package kr.minimalest.core.domain.archive;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.post.PostService;
 import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
+import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Archive API", description = "아카이브 관련 API입니다.")
 @Slf4j
 @RestController
 @RequestMapping("/api/archive")
@@ -51,8 +54,26 @@ public class ArchiveApi {
         return ApiResponse.success(postViewResponse);
     }
 
+    @GetMapping("/{author}/post/preview")
+    public ApiResponse<?> findAllPostPreviews(
+            @PathVariable String author,
+            @PageableDefault Pageable pageable
+    ) {
+        Page<PostPreviewResponse> postPreviewResponses = postService.findAllPostPreview(author, pageable);
+        return ApiResponse.success(postPreviewResponses);
+    }
+
+    @GetMapping("/{author}/post/{sequence}/preview")
+    public ApiResponse<?> findPostPreview(
+            @PathVariable String author,
+            @PathVariable Long sequence
+    ) {
+        PostPreviewResponse postPreviewResponse = postService.findPostPreview(author, sequence);
+        return ApiResponse.success(postPreviewResponse);
+    }
+
     @GetMapping("/{author}/folder")
-    public ApiResponse<?> findAll(
+    public ApiResponse<?> findFolder(
             @PathVariable String author
     ) {
         List<FolderView> folderTree = folderService.getFolderTree(author);

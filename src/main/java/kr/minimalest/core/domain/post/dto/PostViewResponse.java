@@ -12,11 +12,11 @@ public class PostViewResponse {
 
     private String author;
     private String title;
-    private String subtitle;
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime lastModifiedAt;
 }
