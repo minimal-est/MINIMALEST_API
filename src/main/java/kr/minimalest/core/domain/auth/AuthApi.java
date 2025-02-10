@@ -48,7 +48,7 @@ public class AuthApi {
             @CookieValue(value = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
     ) {
-        if (!StringUtils.hasText(refreshToken) || jwtService.isValidToken(refreshToken)) {
+        if (StringUtils.hasText(refreshToken) && jwtService.isValidToken(refreshToken)) {
             String subject = jwtService.extractClaims(refreshToken).get().getSubject();
 
             // 새로운 Access Token 발급 및 헤더 추가
