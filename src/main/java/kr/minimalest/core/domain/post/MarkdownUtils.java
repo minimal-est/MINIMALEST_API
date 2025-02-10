@@ -1,11 +1,14 @@
 package kr.minimalest.core.domain.post;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MarkdownUtils {
 
     public static <T> List<T> extract(String target, Class<T> type) {
@@ -14,6 +17,7 @@ public final class MarkdownUtils {
 
         List<Image> images = new ArrayList<>();
         List<Heading> headings = new ArrayList<>();
+        List<Text> texts = new ArrayList<>();
 
         document.accept(new AbstractVisitor() {
             @Override
@@ -25,6 +29,11 @@ public final class MarkdownUtils {
             public void visit(Heading heading) {
                 headings.add(heading);
             }
+
+            @Override
+            public void visit(Text text) {
+                texts.add(text);
+            }
         });
 
         if (type.isAssignableFrom(Image.class)) {
@@ -35,6 +44,12 @@ public final class MarkdownUtils {
 
         if (type.isAssignableFrom(Heading.class)) {
             return headings.stream()
+                    .map(type::cast)
+                    .toList();
+        }
+
+        if (type.isAssignableFrom(Text.class)) {
+            return texts.stream()
                     .map(type::cast)
                     .toList();
         }

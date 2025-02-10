@@ -54,6 +54,9 @@ dependencies {
 	// Markdown 추출
 	implementation 'org.commonmark:commonmark:0.24.0'
 
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
+
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
