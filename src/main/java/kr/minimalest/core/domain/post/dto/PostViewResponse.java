@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.minimalest.core.domain.post.Post;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,4 +20,12 @@ public class PostViewResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime lastModifiedAt;
+
+    public static PostViewResponse fromEntity(Post post) {
+        return PostViewResponse.builder()
+                .author(post.getArchive().getAuthor())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+    }
 }

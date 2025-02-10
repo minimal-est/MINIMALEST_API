@@ -2,6 +2,9 @@ package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.minimalest.core.domain.post.Post;
+import kr.minimalest.core.domain.post.PostConstants;
+import kr.minimalest.core.domain.post.SummaryUtils;
 import lombok.Builder;
 import lombok.Data;
 
@@ -31,4 +34,15 @@ public class PostPreviewResponse {
     @Schema(description = "포스트 최종 수정 일시", example = "2025-02-08 15:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime lastModifiedAt;
+
+    public static PostPreviewResponse fromEntity(Post post) {
+        return PostPreviewResponse.builder()
+                .author(post.getArchive().getAuthor())
+                .title(SummaryUtils.createTitleSummary(post.getTitle(), PostConstants.MAX_LENGTH_TITLE))
+                .summary(post.getSummary())
+                .thumbnailUrl(post.getThumbnailUrl())
+                .createdAt(post.getCreatedAt())
+                .lastModifiedAt(post.getLastModifiedAt())
+                .build();
+    }
 }
