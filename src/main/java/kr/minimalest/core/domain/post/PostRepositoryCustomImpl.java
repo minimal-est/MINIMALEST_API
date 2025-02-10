@@ -6,10 +6,10 @@ import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
-
-import static kr.minimalest.core.domain.post.PostConstants.MAX_LENGTH_TITLE;
+import java.util.stream.Collectors;
 
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
@@ -26,6 +26,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 WHERE p.archive.author = :author
                 """;
 
+        query = appendOrderBy(query, pageable.getSort());
+
         List<Post> posts = em.createQuery(query, Post.class)
                 .setParameter("author", author)
                 .setFirstResult((int) pageable.getOffset())
@@ -33,16 +35,18 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .getResultList();
 
         List<PostPreviewResponse> postPreviewResponses = posts.stream()
-                .map((post) -> (PostPreviewResponse.builder()
-                                .author(post.getArchive().getAuthor())
-                                .title(SummaryUtils.createTitleSummary(post.getTitle(), MAX_LENGTH_TITLE))
-                                .summary(post.getSummary())
-                                .thumbnailUrl(post.getThumbnailUrl())
-                                .createdAt(post.getCreatedAt())
-                                .lastModifiedAt(post.getLastModifiedAt())
-                                .build())).toList();
+                .map(PostPreviewResponse::fromEntity).toList();
 
         return new PageImpl<>(postPreviewResponses, pageable, calculateTotalCount(author));
+    }
+
+    private static String appendOrderBy(String query, Sort sort) {
+        if (sort.isUnsorted()) {
+            return query;
+        }
+        return query + sort.stream()
+                .map((order) -> (String.format("p.%s %s", order.getProperty(), order.getDirection().name())))
+                .collect(Collectors.joining(", ", " ORDER BY ", ""));
     }
 
     private long calculateTotalCount(String author) {

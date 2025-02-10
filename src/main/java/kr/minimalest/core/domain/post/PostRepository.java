@@ -1,13 +1,10 @@
 package kr.minimalest.core.domain.post;
 
-import kr.minimalest.core.domain.archive.Archive;
-import kr.minimalest.core.domain.member.Member;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,7 +30,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             JOIN FETCH p.archive a
             WHERE a.author = :author AND p.sequence = :sequence
     """)
-    Optional<Post> findWithArchive(String author, Long sequence);
+    Optional<Post> findWithArchive(String author, long sequence);
 
     // Author(저자)로 PostViews 조회
     @Query("""
@@ -54,7 +51,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("""
             SELECT COALESCE(MAX(p.sequence), 0)
             FROM Post AS p
-            WHERE p.archive = :archive
+            WHERE p.archive.author = :author
     """)
-    long findMaxSequenceByArchiveForUpdate(Archive archive);
+    long findMaxSequenceByArchive(String author);
 }
