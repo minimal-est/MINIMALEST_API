@@ -14,8 +14,8 @@ public interface ArchiveRepository extends JpaRepository<Archive, Long> {
     @Query("""
         SELECT a
         FROM Archive AS a
-        JOIN FETCH a.member
-        WHERE a.member.email = :email
+        JOIN FETCH a.member m
+        WHERE a.author = :author AND m.email = :email
     """)
-    Optional<Archive> findByMemberEmailWithMember(String email);
+    Optional<Archive> findByAuthorAndMemberEmail(String author, String email);
 }
