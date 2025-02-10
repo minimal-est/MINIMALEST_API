@@ -6,6 +6,11 @@ import java.util.UUID;
 
 public abstract class FileUtils {
 
+    // png -> image/png
+    public static String toImageContentType(String pureExt) {
+        return "image/" + pureExt;
+    }
+
     // http://example.com/file?key=image/my-key.png&position=abc.. -> image/my-key.png
     public static String extractKeyParameter(String fileUrl) {
         int keyStartIndex = fileUrl.indexOf("key=") + 4;
