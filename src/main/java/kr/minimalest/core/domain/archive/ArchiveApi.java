@@ -1,11 +1,15 @@
 package kr.minimalest.core.domain.archive;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.minimalest.core.common.annotation.Authenticate;
+import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.post.PostService;
 import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
+import kr.minimalest.core.domain.post.dto.PostCreateRequest;
+import kr.minimalest.core.domain.post.dto.PostCreateResponse;
 import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +49,17 @@ public class ArchiveApi {
         return ApiResponse.success(postViewResponses);
     }
 
+    @Authenticate
+    @PostMapping("/{author}/post")
+    public ApiResponse<?> createPost(
+            @PathVariable String author,
+            @AuthenticatedMemberEmail String email,
+            @RequestBody PostCreateRequest postCreateRequest
+    ) {
+        PostCreateResponse postCreateResponse = postService.create(author, email, postCreateRequest);
+        return ApiResponse.success(postCreateResponse);
+    }
+
     @GetMapping("/{author}/post/{sequence}")
     public ApiResponse<?> findPost(
             @PathVariable String author,
@@ -55,9 +70,9 @@ public class ArchiveApi {
     }
 
     @GetMapping("/{author}/post/preview")
-    public ApiResponse<?> findAllPostPreviews(
+    public ApiResponse<?> findAllPostPreview(
             @PathVariable String author,
-            @PageableDefault Pageable pageable
+            Pageable pageable
     ) {
         Page<PostPreviewResponse> postPreviewResponses = postService.findAllPostPreview(author, pageable);
         return ApiResponse.success(postPreviewResponses);

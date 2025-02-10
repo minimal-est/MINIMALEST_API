@@ -1,4 +1,4 @@
-package kr.minimalest.core.domain.post.thumbnail;
+package kr.minimalest.core.domain.post;
 
 import java.io.OutputStream;
 
