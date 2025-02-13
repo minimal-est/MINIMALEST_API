@@ -5,8 +5,8 @@ import kr.minimalest.core.domain.post.dto.*;
 import kr.minimalest.core.domain.post.service.PostCreateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +21,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostCreateService postCreateService;
 
+    public Slice<PostViewResponse> findAllPostViewInFolder(String author, Long folderId, @Nullable Pageable pageable) {
+        return postRepository.findPostViewsInFolderByAuthor(author, folderId, pageable);
+    }
+
     @Transactional(readOnly = true)
-    public Page<PostPreviewResponse> findAllPostPreview(String author, @Nullable Pageable pageable) {
+    public Slice<PostPreviewResponse> findAllPostPreview(String author, @Nullable Pageable pageable) {
         return postRepository.findPostPreviewsByAuthor(author, pageable);
     }
 
@@ -33,7 +37,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostViewResponse> findAllPostView(String author, @Nullable Pageable pageable) {
+    public Slice<PostViewResponse> findAllPostView(String author, @Nullable Pageable pageable) {
         return postRepository.findAllView(author, pageable);
     }
 

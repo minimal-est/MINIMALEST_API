@@ -1,10 +1,13 @@
 package kr.minimalest.core.domain.post;
 
 import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
-import org.springframework.data.domain.Page;
+import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PostRepositoryCustom {
 
-    Page<PostPreviewResponse> findPostPreviewsByAuthor(String author, Pageable pageable);
+    Slice<PostViewResponse> findPostViewsInFolderByAuthor(String author, Long folderId, Pageable pageable);
+
+    Slice<PostPreviewResponse> findPostPreviewsByAuthor(String author, Pageable pageable);
 }

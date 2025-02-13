@@ -3,13 +3,10 @@ package kr.minimalest.core.domain.post;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import kr.minimalest.core.domain.post.dto.PostViewResponse;
+import org.springframework.data.domain.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
@@ -17,7 +14,37 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     private EntityManager em;
 
     @Override
-    public Page<PostPreviewResponse> findPostPreviewsByAuthor(String author, Pageable pageable) {
+    public Slice<PostViewResponse> findPostViewsInFolderByAuthor(String author, Long folderId, Pageable pageable) {
+        String query =
+                """
+                SELECT p
+                FROM Post AS p
+                JOIN FETCH p.archive
+                JOIN FETCH p.folder
+                WHERE p.archive.author = :author AND p.folder.id = :folderId
+                """;
+
+        List<Post> posts = em.createQuery(query, Post.class)
+                .setParameter("author", author)
+                .setParameter("folderId", folderId)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize() + 1)
+                .getResultList();
+
+        boolean hasNext = posts.size() > pageable.getPageSize();
+        if (hasNext) {
+            posts.remove(posts.size() - 1);
+        }
+
+        List<PostViewResponse> postViewResponses = posts.stream()
+                .map(PostViewResponse::fromEntity)
+                .toList();
+
+        return new SliceImpl<>(postViewResponses, pageable, hasNext);
+    }
+
+    @Override
+    public Slice<PostPreviewResponse> findPostPreviewsByAuthor(String author, Pageable pageable) {
         String query =
                 """
                 SELECT p
@@ -26,39 +53,21 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 WHERE p.archive.author = :author
                 """;
 
-        query = appendOrderBy(query, pageable.getSort());
-
         List<Post> posts = em.createQuery(query, Post.class)
                 .setParameter("author", author)
                 .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
+                .setMaxResults(pageable.getPageSize() + 1)
                 .getResultList();
 
-        List<PostPreviewResponse> postPreviewResponses = posts.stream()
-                .map(PostPreviewResponse::fromEntity).toList();
-
-        return new PageImpl<>(postPreviewResponses, pageable, calculateTotalCount(author));
-    }
-
-    private static String appendOrderBy(String query, Sort sort) {
-        if (sort.isUnsorted()) {
-            return query;
+        boolean hasNext = posts.size() > pageable.getPageSize();
+        if (hasNext) {
+            posts.remove(posts.size() - 1);
         }
-        return query + sort.stream()
-                .map((order) -> (String.format("p.%s %s", order.getProperty(), order.getDirection().name())))
-                .collect(Collectors.joining(", ", " ORDER BY ", ""));
-    }
 
-    private long calculateTotalCount(String author) {
-        String query =
-                """
-                SELECT COUNT(p)
-                FROM Post AS p
-                WHERE p.archive.author = :author
-                """;
+        List<PostPreviewResponse> postPreviewResponses = posts.stream()
+                .map(PostPreviewResponse::fromEntity)
+                .toList();
 
-        return em.createQuery(query, Long.class)
-                .setParameter("author", author)
-                .getSingleResult();
+        return new SliceImpl<>(postPreviewResponses, pageable, hasNext);
     }
 }

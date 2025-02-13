@@ -3,6 +3,7 @@ package kr.minimalest.core.domain.post;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -44,7 +45,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             FROM Post AS p
             WHERE p.archive.author = :author
     """)
-    Page<PostViewResponse> findAllView(String author, Pageable pageable);
+    Slice<PostViewResponse> findAllView(String author, Pageable pageable);
 
     // 해당 Archive 최대 Sequence(번호) 조회
     // 동시성 문제를 해결하기 위해 락(Lock) 걸기
