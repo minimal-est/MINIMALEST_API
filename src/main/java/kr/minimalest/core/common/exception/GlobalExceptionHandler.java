@@ -3,6 +3,7 @@ package kr.minimalest.core.common.exception;
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.common.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler {
     public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         // 모든 Validation 에러 메시지 받기
         String joinedAllErrorMessages = ex.getBindingResult().getFieldErrors().stream()
-                .map((fieldError) -> fieldError.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(" "));
 
         return ApiResponse.error(HttpStatus.BAD_REQUEST, joinedAllErrorMessages);
