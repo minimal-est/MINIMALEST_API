@@ -2,9 +2,10 @@ package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.minimalest.core.domain.post.ContentHelper;
 import kr.minimalest.core.domain.post.Post;
-import kr.minimalest.core.domain.post.PostConstants;
-import kr.minimalest.core.domain.post.SummaryUtils;
+import kr.minimalest.core.domain.post.utils.PostConstants;
+import kr.minimalest.core.domain.post.utils.SummaryUtils;
 import lombok.Builder;
 import lombok.Data;
 
@@ -35,11 +36,11 @@ public class PostPreviewResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime lastModifiedAt;
 
-    public static PostPreviewResponse fromEntity(Post post) {
+    public static PostPreviewResponse fromEntity(Post post, ContentHelper contentHelper) {
         return PostPreviewResponse.builder()
                 .author(post.getArchive().getAuthor())
-                .title(SummaryUtils.createTitleSummary(post.getTitle(), PostConstants.MAX_LENGTH_TITLE))
-                .summary(post.getSummary())
+                .title(contentHelper.summarize(post.getTitle(), PostConstants.MAX_LENGTH_SUMMARY_TITLE))
+                .summary(contentHelper.summarize(post.getContent(), PostConstants.MAX_LENGTH_SUMMARY_CONTENT))
                 .thumbnailUrl(post.getThumbnailUrl())
                 .createdAt(post.getCreatedAt())
                 .lastModifiedAt(post.getLastModifiedAt())

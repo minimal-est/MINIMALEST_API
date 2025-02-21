@@ -21,9 +21,7 @@ public class Post extends BaseColumn {
     @Column(nullable = false)
     private String title;
 
-    // 부제목으로, 선택사항입니다.
-    private String subtitle;
-
+    // 포스트의 본문입니다.
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
@@ -33,20 +31,22 @@ public class Post extends BaseColumn {
 
     // 해당 글이 어떤 시리즈에 해당하는지를 나타냅니다.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "series_id")
+    @JoinColumn(name = "series_id", nullable = true)
     private Series series;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "archive_id")
+    @JoinColumn(name = "archive_id", nullable = false)
     private Archive archive;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
+    @JoinColumn(name = "folder_id", nullable = true)
     private Folder folder;
 
+    @Column(nullable = false)
     private boolean hasThumbnail;
 
     @Setter
+    @Column(nullable = true)
     private String thumbnailUrl;
 }

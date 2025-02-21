@@ -2,7 +2,7 @@ package kr.minimalest.core.domain.post;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.post.dto.*;
-import kr.minimalest.core.domain.post.service.PostCreateService;
+import kr.minimalest.core.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +19,11 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostCreateService postCreateService;
+    private final PostCreator postCreator;
+    private final ContentHelper contentHelper;
 
-    public Slice<PostViewResponse> findAllPostViewInFolder(String author, Long folderId, @Nullable Pageable pageable) {
-        return postRepository.findPostViewsInFolderByAuthor(author, folderId, pageable);
+    public Slice<PostPreviewResponse> findAllPostViewInFolder(String author, Long folderId, @Nullable Pageable pageable) {
+        return postRepository.findPostPreviewsInFolderByAuthor(author, folderId, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -33,7 +34,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostPreviewResponse findPostPreview(String author, Long sequence) {
         Post post = validateAndFindPost(author, sequence);
-        return PostPreviewResponse.fromEntity(post);
+        return PostPreviewResponse.fromEntity(post, contentHelper);
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +50,7 @@ public class PostService {
 
     @Transactional
     public PostCreateResponse create(String author, String email, PostCreateRequest request) {
-        return postCreateService.create(author, email, request);
+        return postCreator.create(author, email, request);
     }
 
     // Entity를 반환하는 메소드를 컴포넌트로 분리하기엔 부담이.. 어쩌지?

@@ -24,14 +24,11 @@ public class Archive extends BaseColumn {
     @Column(nullable = false)
     private String mainTitle;
 
+    @Column(nullable = true)
     private String subTitle;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    public void setMember(Member member) {
-        this.member = member;
-        member.getArchives().add(this);
-    }
 }

@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.archive;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kr.minimalest.core.common.annotation.Authenticate;
 import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
 import kr.minimalest.core.domain.folder.FolderService;
@@ -14,8 +15,8 @@ import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,7 @@ public class ArchiveApi {
             @PathVariable String author,
             @PageableDefault Pageable pageable
     ) {
-        Page<PostViewResponse> postViewResponses = postService.findAllPostView(author, pageable);
+        Slice<PostViewResponse> postViewResponses = postService.findAllPostView(author, pageable);
         return ApiResponse.success(postViewResponses);
     }
 
@@ -54,8 +55,10 @@ public class ArchiveApi {
     public ApiResponse<?> createPost(
             @PathVariable String author,
             @AuthenticatedMemberEmail String email,
-            @RequestBody PostCreateRequest postCreateRequest
+            @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
+        log.info(postCreateRequest.toString());
+
         PostCreateResponse postCreateResponse = postService.create(author, email, postCreateRequest);
         return ApiResponse.success(postCreateResponse);
     }
@@ -74,7 +77,7 @@ public class ArchiveApi {
             @PathVariable String author,
             Pageable pageable
     ) {
-        Page<PostPreviewResponse> postPreviewResponses = postService.findAllPostPreview(author, pageable);
+        Slice<PostPreviewResponse> postPreviewResponses = postService.findAllPostPreview(author, pageable);
         return ApiResponse.success(postPreviewResponses);
     }
 
@@ -87,8 +90,26 @@ public class ArchiveApi {
         return ApiResponse.success(postPreviewResponse);
     }
 
-    @GetMapping("/{author}/folder")
-    public ApiResponse<?> findFolder(
+    @GetMapping("/{author}/folder/{folderId}/post")
+    public ApiResponse<?> findAllPostInFolder(
+            @PathVariable String author,
+            @PathVariable Long folderId,
+            Pageable pageable
+    ) {
+        Slice<PostPreviewResponse> postPreviewResponses = postService.findAllPostViewInFolder(author, folderId, pageable);
+        return ApiResponse.success(postPreviewResponses);
+    }
+
+    @GetMapping("/{author}/folder/flat")
+    public ApiResponse<?> findFolderFlat(
+            @PathVariable String author
+    ) {
+        List<FolderView> folderFlat = folderService.getFlatFolders(author);
+        return ApiResponse.success(folderFlat);
+    }
+
+    @GetMapping("/{author}/folder/tree")
+    public ApiResponse<?> findFolderTree(
             @PathVariable String author
     ) {
         List<FolderView> folderTree = folderService.getFolderTree(author);

@@ -29,6 +29,11 @@ public class Member extends BaseColumn {
     private String email;
 
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Archive> archives = new ArrayList<>();
+
+    public void addArchive(Archive archive) {
+        this.archives.add(archive);
+        archive.setMember(this);
+    }
 }

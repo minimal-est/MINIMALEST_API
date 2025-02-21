@@ -1,7 +1,7 @@
-package kr.minimalest.core.domain.post;
+package kr.minimalest.core.domain.post.repository;
 
+import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;

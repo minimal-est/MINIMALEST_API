@@ -9,6 +9,12 @@ import java.util.Optional;
 @Repository
 public interface ArchiveRepository extends JpaRepository<Archive, Long> {
 
+    @Query("""
+        SELECT a
+        FROM Archive AS a
+        JOIN FETCH a.member m
+        WHERE a.author = :author
+    """)
     Optional<Archive> findByAuthor(String author);
 
     @Query("""

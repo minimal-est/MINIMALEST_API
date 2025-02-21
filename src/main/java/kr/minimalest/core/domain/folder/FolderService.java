@@ -1,18 +1,16 @@
 package kr.minimalest.core.domain.folder;
 
+import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.folder.dto.FolderWithPost;
 import kr.minimalest.core.domain.post.Post;
-import kr.minimalest.core.domain.post.PostRepository;
+import kr.minimalest.core.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -21,6 +19,13 @@ public class FolderService {
 
     private final FolderRepository folderRepository;
     private final PostRepository postRepository;
+
+    @Transactional(readOnly = true)
+    public FolderView validateFolder(Long id) {
+        Optional<Folder> optionalFolder = folderRepository.findById(id);
+        Folder folder = optionalFolder.orElseThrow(() -> new EntityNotFoundException("해당 폴더가 존재하지 않습니다!"));
+        return FolderView.fromEntity(folder);
+    }
 
     @Transactional
     public List<FolderView> getFolderTree(String author) {
@@ -33,7 +38,8 @@ public class FolderService {
         return constructTree(flatFolders, folderIndexMap);
     }
 
-    private List<FolderView> getFlatFolders(String author) {
+    @Transactional
+    public List<FolderView> getFlatFolders(String author) {
         List<Folder> folders = folderRepository.findByArchiveAuthor(author);
 
         List<FolderView> flatFolders = folders.stream()

@@ -15,16 +15,18 @@ public class PostViewResponse {
     private String title;
     private String content;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime lastModifiedAt;
 
     public static PostViewResponse fromEntity(Post post) {
         return PostViewResponse.builder()
                 .author(post.getArchive().getAuthor())
                 .title(post.getTitle())
+                .createdAt(post.getCreatedAt())
+                .lastModifiedAt(post.getLastModifiedAt())
                 .content(post.getContent())
                 .build();
     }
