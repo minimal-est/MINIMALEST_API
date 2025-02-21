@@ -1,48 +1,54 @@
 package kr.minimalest.core.domain.post.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.archive.ArchiveRepository;
 import kr.minimalest.core.domain.archive.ArchiveService;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
 import kr.minimalest.core.domain.file.dto.FileResponse;
-import kr.minimalest.core.domain.post.MarkdownUtils;
+import kr.minimalest.core.domain.folder.FolderRepository;
+import kr.minimalest.core.domain.folder.FolderService;
+import kr.minimalest.core.domain.folder.dto.FolderView;
+import kr.minimalest.core.domain.post.Extractor;
 import kr.minimalest.core.domain.post.Post;
-import kr.minimalest.core.domain.post.PostRepository;
+import kr.minimalest.core.domain.post.repository.PostRepository;
 import kr.minimalest.core.domain.post.dto.PostCreateRequest;
 import kr.minimalest.core.domain.post.dto.PostCreateResponse;
 import lombok.RequiredArgsConstructor;
 import org.commonmark.node.Image;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
-public class PostCreateService {
+public class MarkdownPostCreateService {
 
     private final PostRepository postRepository;
     private final ArchiveRepository archiveRepository;
+    private final FolderRepository folderRepository;
+    private final FolderService folderService;
     private final ArchiveService archiveService;
     private final PostImageService postImageService;
     private final PostThumbnailService postThumbnailService;
+    private final Extractor extractor;
 
     @Transactional
     public PostCreateResponse create(String author, String email, PostCreateRequest request) {
         // 아카이브 검증
         ArchiveInfoResponse archiveInfoResponse = archiveService.validateArchive(author, email);
 
+        // 폴더 검증
+        FolderView folderView = folderService.validateFolder(request.getFolderId());
+
         // 아카이브의 Post Sequence 더하기
         long nextSequence = postRepository.findMaxSequenceByArchive(author) + 1;
 
         // 이미지 추출 후 썸네일 선정
-        List<Image> images = MarkdownUtils.extract(request.getContent(), Image.class);
+        List<Image> images = extractor.extract(request.getContent(), Image.class);
         Optional<Image> optionalImage = PostImageService.extractFirstImage(images);
         boolean hasThumbnail = optionalImage.isPresent();
 
         Post post = request.toEntity(
-                null,
+                folderRepository.findById(folderView.getId()).get(),
                 archiveRepository.findByAuthor(archiveInfoResponse.getAuthor()).get(),
                 nextSequence,
                 hasThumbnail,

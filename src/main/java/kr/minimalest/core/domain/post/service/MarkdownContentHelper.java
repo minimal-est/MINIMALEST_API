@@ -1,5 +1,7 @@
-package kr.minimalest.core.domain.post;
+package kr.minimalest.core.domain.post.service;
 
+import kr.minimalest.core.domain.post.ContentHelper;
+import kr.minimalest.core.domain.post.utils.SummaryUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.commonmark.node.*;
@@ -7,11 +9,13 @@ import org.commonmark.parser.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MarkdownUtils {
+public final class MarkdownContentHelper implements ContentHelper {
 
-    public static <T> List<T> extract(String target, Class<T> type) {
+    @Override
+    public <T> List<T> extract(String target, Class<T> type) {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(target);
 
@@ -52,8 +56,21 @@ public final class MarkdownUtils {
             return texts.stream()
                     .map(type::cast)
                     .toList();
+        } else {
+            throw new IllegalStateException("추출할 수 없는 type 입니다!");
         }
+    }
 
-        return List.of();
+    @Override
+    public String extractPureText(String target) {
+        List<Text> texts = extract(target, Text.class);
+        return texts.stream()
+                .map(Text::getLiteral)
+                .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public String summarize(String content, int maxLength) {
+        return SummaryUtils.summarize(extractPureText(content), maxLength);
     }
 }
