@@ -2,10 +2,9 @@ package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.minimalest.core.domain.post.ContentHelper;
+import kr.minimalest.core.domain.post.service.ContentHelper;
 import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.utils.PostConstants;
-import kr.minimalest.core.domain.post.utils.SummaryUtils;
 import lombok.Builder;
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package kr.minimalest.core.domain.post.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import kr.minimalest.core.domain.post.ContentHelper;
+import kr.minimalest.core.domain.post.service.ContentHelper;
 import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
 import lombok.RequiredArgsConstructor;

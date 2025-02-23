@@ -1,6 +1,5 @@
 package kr.minimalest.core.domain.post.service;
 
-import kr.minimalest.core.domain.post.ContentHelper;
 import kr.minimalest.core.domain.post.utils.SummaryUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

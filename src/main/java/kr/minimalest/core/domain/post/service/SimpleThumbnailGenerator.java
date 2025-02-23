@@ -1,6 +1,5 @@
 package kr.minimalest.core.domain.post.service;
 
-import kr.minimalest.core.domain.post.ThumbnailGenerator;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 

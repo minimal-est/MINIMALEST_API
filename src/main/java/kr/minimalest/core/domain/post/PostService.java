@@ -3,6 +3,8 @@ package kr.minimalest.core.domain.post;
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.post.dto.*;
 import kr.minimalest.core.domain.post.repository.PostRepository;
+import kr.minimalest.core.domain.post.service.ContentHelper;
+import kr.minimalest.core.domain.post.service.PostCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +55,6 @@ public class PostService {
         return postCreator.create(author, email, request);
     }
 
-    // Entity를 반환하는 메소드를 컴포넌트로 분리하기엔 부담이.. 어쩌지?
     private Post validateAndFindPost(String author, long sequence) {
         Optional<Post> optionalPost = postRepository.findWithArchive(author, sequence);
         return optionalPost.orElseThrow(() -> new EntityNotFoundException("해당 포스트는 존재하지 않습니다!"));
