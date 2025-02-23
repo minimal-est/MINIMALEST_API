@@ -57,8 +57,8 @@ public class ArchiveApi {
             @AuthenticatedMemberEmail String email,
             @Valid @RequestBody PostCreateRequest postCreateRequest
     ) {
-        log.info(postCreateRequest.toString());
-
+        archiveService.validateArchive(author, email);
+        folderService.validateFolder(postCreateRequest.getFolderId());
         PostCreateResponse postCreateResponse = postService.create(author, email, postCreateRequest);
         return ApiResponse.success(postCreateResponse);
     }
