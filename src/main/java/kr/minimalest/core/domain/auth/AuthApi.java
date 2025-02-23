@@ -27,7 +27,7 @@ public class AuthApi {
 
     @PostMapping("/login")
     public ApiResponse<?> login(
-            @RequestBody LoginRequest loginRequest,
+            @Valid @RequestBody LoginRequest loginRequest,
             HttpServletResponse response
     ) {
         // 회원 검증
