@@ -40,7 +40,7 @@ public class FolderService {
 
     @Transactional
     public List<FolderView> getFlatFolders(String author) {
-        List<Folder> folders = folderRepository.findByArchiveAuthor(author);
+        List<Folder> folders = folderRepository.findAllByArchiveAuthor(author);
 
         List<FolderView> flatFolders = folders.stream()
                 .map((folder) -> (

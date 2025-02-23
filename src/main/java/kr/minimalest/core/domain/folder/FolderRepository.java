@@ -1,5 +1,6 @@
 package kr.minimalest.core.domain.folder;
 
+import kr.minimalest.core.domain.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,5 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
         LEFT JOIN FETCH f.children fc
         WHERE a.author = :author
     """)
-    List<Folder> findByArchiveAuthor(String author);
+    List<Folder> findAllByArchiveAuthor(String author);
 }
