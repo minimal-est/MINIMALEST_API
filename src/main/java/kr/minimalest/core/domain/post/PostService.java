@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.post;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.post.dto.*;
 import kr.minimalest.core.domain.post.repository.PostRepository;
 import kr.minimalest.core.domain.post.service.ContentHelper;
@@ -36,7 +37,9 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostPreviewResponse findPostPreview(String author, Long sequence) {
         Post post = validateAndFindPost(author, sequence);
-        return PostPreviewResponse.fromEntity(post, contentHelper);
+        Folder folder = postRepository.findFolder(post)
+                .orElseThrow(() -> new EntityNotFoundException("해당 포스트의 폴더가 존재하지 않습니다."));
+        return PostPreviewResponse.fromEntity(post, folder.getName(), contentHelper);
     }
 
     @Transactional(readOnly = true)

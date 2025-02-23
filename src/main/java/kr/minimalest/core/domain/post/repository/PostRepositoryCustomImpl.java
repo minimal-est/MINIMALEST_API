@@ -63,6 +63,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 SELECT p
                 FROM Post AS p
                 JOIN FETCH p.archive
+                JOIN FETCH p.folder
                 WHERE p.archive.author = :author
                 """;
 
@@ -86,7 +87,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private List<PostPreviewResponse> toPostPreviewResponses(List<Post> posts) {
         return posts.stream()
-                .map((post) -> PostPreviewResponse.fromEntity(post, contentHelper))
+                .map((post) -> PostPreviewResponse.fromEntity(post, post.getFolder().getName(), contentHelper))
                 .toList();
     }
 

@@ -1,5 +1,6 @@
 package kr.minimalest.core.domain.post.repository;
 
+import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import org.springframework.data.domain.Pageable;
@@ -55,4 +56,11 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             WHERE p.archive.author = :author
     """)
     long findMaxSequenceByArchive(String author);
+
+    @Query("""
+            SELECT p.folder
+            FROM Post AS p
+            WHERE p = :post
+    """)
+    Optional<Folder> findFolder(Post post);
 }

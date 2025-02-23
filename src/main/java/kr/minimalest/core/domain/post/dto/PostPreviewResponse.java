@@ -24,6 +24,12 @@ public class PostPreviewResponse {
     @Schema(description = "요약", example = "포스트 본문입니다...")
     private String summary;
 
+    @Schema(description = "폴더명", example = "미니멀리스트 개발일기")
+    private String folderName;
+
+    @Schema(description = "시퀀스", example = "2")
+    private long sequence;
+
     @Schema(description = "썸네일 URL", example = "http://example.com/thumbnail.png")
     private String thumbnailUrl;
 
@@ -35,11 +41,13 @@ public class PostPreviewResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime lastModifiedAt;
 
-    public static PostPreviewResponse fromEntity(Post post, ContentHelper contentHelper) {
+    public static PostPreviewResponse fromEntity(Post post, String folderName, ContentHelper contentHelper) {
         return PostPreviewResponse.builder()
                 .author(post.getArchive().getAuthor())
                 .title(contentHelper.summarize(post.getTitle(), PostConstants.MAX_LENGTH_SUMMARY_TITLE))
                 .summary(contentHelper.summarize(post.getContent(), PostConstants.MAX_LENGTH_SUMMARY_CONTENT))
+                .sequence(post.getSequence())
+                .folderName(folderName)
                 .thumbnailUrl(post.getThumbnailUrl())
                 .createdAt(post.getCreatedAt())
                 .lastModifiedAt(post.getLastModifiedAt())
