@@ -22,7 +22,7 @@ public class SimpleThumbnailGenerator implements ThumbnailGenerator {
 
             Thumbnails.of(inputStream)
                     .size(MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT)
-                    .outputQuality(0.9)
+                    .outputQuality(1.0f)
                     .outputFormat(pureExt)
                     .toOutputStream(outputStream);
 
