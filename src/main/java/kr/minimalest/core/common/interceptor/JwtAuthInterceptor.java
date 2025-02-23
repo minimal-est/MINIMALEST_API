@@ -2,7 +2,7 @@ package kr.minimalest.core.common.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.minimalest.core.domain.auth.JwtService;
+import kr.minimalest.core.domain.auth.JwtHelper;
 import kr.minimalest.core.common.annotation.Authenticate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String TOKEN_HEADER_NAME = "Authorization";
 
-    private final JwtService jwtService;
+    private final JwtHelper jwtHelper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -46,7 +46,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
             String accessToken = tokenHeader.substring(BEARER_PREFIX.length());
 
             // 유효하지 않는 토큰이라면
-            if (!StringUtils.hasText(accessToken) || !jwtService.isValidToken(accessToken)) {
+            if (!StringUtils.hasText(accessToken) || !jwtHelper.isValidToken(accessToken)) {
                 response.sendError(SC_UNAUTHORIZED, "토큰이 유효하지 않습니다.");
                 return false;
             }

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class JwtService {
+public class JwtHelper {
 
     @Value("${jwt.access-expiration}")
     public int ACCESS_EXPIRATION; // Default 30분

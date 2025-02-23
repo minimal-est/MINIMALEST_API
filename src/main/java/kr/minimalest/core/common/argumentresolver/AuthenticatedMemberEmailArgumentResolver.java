@@ -1,9 +1,9 @@
 package kr.minimalest.core.common.argumentresolver;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.minimalest.core.domain.auth.JwtService;
+import kr.minimalest.core.domain.auth.JwtHelper;
 import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
-import kr.minimalest.core.domain.auth.exception.UnAuthorizedException;
+import kr.minimalest.core.domain.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class AuthenticatedMemberEmailArgumentResolver implements HandlerMethodAr
 
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private final JwtService jwtService;
+    private final JwtHelper jwtHelper;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -33,11 +33,11 @@ public class AuthenticatedMemberEmailArgumentResolver implements HandlerMethodAr
 
         if (StringUtils.hasText(tokenHeader) && tokenHeader.startsWith(BEARER_PREFIX)) {
             String accessToken = tokenHeader.substring(BEARER_PREFIX.length());
-            if (jwtService.isValidToken(accessToken)) {
-                return jwtService.extractClaims(accessToken).get().getSubject();
+            if (jwtHelper.isValidToken(accessToken)) {
+                return jwtHelper.extractClaims(accessToken).get().getSubject();
             }
         }
 
-        throw new UnAuthorizedException("인증 정보가 유효하지 않습니다!");
+        throw new UnauthorizedException("인증 정보가 유효하지 않습니다!");
     }
 }
