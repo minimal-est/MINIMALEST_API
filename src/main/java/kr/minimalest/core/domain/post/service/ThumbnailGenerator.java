@@ -1,4 +1,4 @@
-package kr.minimalest.core.domain.post;
+package kr.minimalest.core.domain.post.service;
 
 import java.io.OutputStream;
 

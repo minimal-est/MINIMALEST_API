@@ -1,9 +1,11 @@
 package kr.minimalest.core.domain.post.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.archive.ArchiveRepository;
 import kr.minimalest.core.domain.archive.ArchiveService;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
-import kr.minimalest.core.domain.file.dto.FileResponse;
+import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.folder.FolderRepository;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderView;
@@ -21,24 +23,23 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class HtmlPostCreateService implements PostCreator {
+public class PostCreateService implements PostCreator {
 
     private final PostRepository postRepository;
     private final ArchiveRepository archiveRepository;
     private final FolderRepository folderRepository;
-    private final FolderService folderService;
-    private final ArchiveService archiveService;
     private final PostImageService postImageService;
     private final PostThumbnailService postThumbnailService;
     private final Extractor extractor;
 
     @Transactional
     public PostCreateResponse create(String author, String email, PostCreateRequest request) {
-        // 아카이브 검증
-        ArchiveInfoResponse archiveInfoResponse = archiveService.validateArchive(author, email);
+        // 폴더 및 아카이브 검증
+        Folder folder = folderRepository.findById(request.getFolderId())
+                .orElseThrow(() -> new EntityNotFoundException("폴더가 존재하지 않습니다!"));
 
-        // 폴더 검증
-        FolderView folderView = folderService.validateFolder(request.getFolderId());
+        Archive archive = archiveRepository.findByAuthor(author)
+                .orElseThrow(() -> new EntityNotFoundException("아카이브가 존재하지 않습니다!"));
 
         // 아카이브의 Post Sequence 더하기
         long nextSequence = postRepository.findMaxSequenceByArchive(author) + 1;
@@ -48,16 +49,10 @@ public class HtmlPostCreateService implements PostCreator {
         Optional<Image> optionalImage = PostImageService.extractFirstImage(images);
         boolean hasThumbnail = optionalImage.isPresent();
 
-        Post post = request.toEntity(
-                folderRepository.findById(folderView.getId()).get(),
-                archiveRepository.findByAuthor(archiveInfoResponse.getAuthor()).get(),
-                nextSequence,
-                hasThumbnail,
-                null
-        );
+        Post post = request.toEntity(folder, archive, nextSequence, hasThumbnail, null);
 
-        // 썸네일 URL 생성
-        String thumbnailUrl = optionalImage.map(image -> processThumbnail(image, post)).orElse(null);
+        // 썸네일 저장 및 업로드 후 URL 생성
+        String thumbnailUrl = optionalImage.map(image -> postThumbnailService.createThumbnailUrl(image, post)).orElse(null);
 
         // 포스트에 썸네일 URL 부착
         post.setThumbnailUrl(thumbnailUrl);
@@ -65,14 +60,9 @@ public class HtmlPostCreateService implements PostCreator {
         // 포스트 저장
         postRepository.save(post);
 
-        // 외부 이미지 저장
+        // 내부 이미지를 업로드 및 포스트에 부착
         postImageService.processSaveImages(images, post);
 
-        return new PostCreateResponse(archiveInfoResponse.getAuthor(), nextSequence);
-    }
-
-    private String processThumbnail(Image image, Post post) {
-        FileResponse thumbnailFile = postThumbnailService.createAndUploadAndSaveThumbnail(image, post);
-        return thumbnailFile.getVirtualUrl();
+        return new PostCreateResponse(author, nextSequence);
     }
 }
