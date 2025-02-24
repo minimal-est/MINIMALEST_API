@@ -14,6 +14,8 @@ public class PostViewResponse {
     private String author;
     private String title;
     private String content;
+    private Long folderId;
+    private String folderName;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;

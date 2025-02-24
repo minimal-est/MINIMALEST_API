@@ -40,6 +40,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
                 p.archive.author,
                 p.title,
                 p.content,
+                p.folder.id,
+                p.folder.name,
                 p.createdAt,
                 p.lastModifiedAt
             )
