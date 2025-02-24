@@ -27,9 +27,11 @@ public class PostViewResponse {
         return PostViewResponse.builder()
                 .author(post.getArchive().getAuthor())
                 .title(post.getTitle())
+                .content(post.getContent())
+                .folderId(post.getFolder().getId())
+                .folderName(post.getFolder().getName())
                 .createdAt(post.getCreatedAt())
                 .lastModifiedAt(post.getLastModifiedAt())
-                .content(post.getContent())
                 .build();
     }
 }
