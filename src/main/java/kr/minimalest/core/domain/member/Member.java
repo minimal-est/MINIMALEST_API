@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.member;
 
 import jakarta.persistence.*;
+import kr.minimalest.core.domain.Profile;
 import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.base.BaseColumn;
 import lombok.*;
@@ -31,6 +32,9 @@ public class Member extends BaseColumn {
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Archive> archives = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    private Profile profile;
 
     public void addArchive(Archive archive) {
         this.archives.add(archive);
