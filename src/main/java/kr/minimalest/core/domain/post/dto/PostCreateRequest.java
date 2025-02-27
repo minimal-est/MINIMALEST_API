@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.post.Post;
+import kr.minimalest.core.domain.post.PostStatus;
 import lombok.Data;
 
 @Data
@@ -28,6 +29,7 @@ public class PostCreateRequest {
                 .folder(folder)
                 .hasThumbnail(hasThumbnail)
                 .thumbnailUrl(thumbnailUrl)
+                .postStatus(PostStatus.PUBLISHED)
                 .build();
     }
 }

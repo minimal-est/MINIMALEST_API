@@ -49,4 +49,7 @@ public class Post extends BaseColumn {
     @Setter
     @Column(nullable = true)
     private String thumbnailUrl;
+
+    @Enumerated(EnumType.STRING)
+    private PostStatus postStatus;
 }
