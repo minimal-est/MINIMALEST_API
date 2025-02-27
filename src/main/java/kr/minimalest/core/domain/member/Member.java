@@ -1,7 +1,7 @@
 package kr.minimalest.core.domain.member;
 
 import jakarta.persistence.*;
-import kr.minimalest.core.domain.Profile;
+import kr.minimalest.core.domain.profile.Profile;
 import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.base.BaseColumn;
 import lombok.*;
@@ -33,7 +33,9 @@ public class Member extends BaseColumn {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Archive> archives = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    // 회원과 프로필은 라이프 사이클이 필요하므로 양방향 연관관계가 필요합니다.
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
     public void addArchive(Archive archive) {

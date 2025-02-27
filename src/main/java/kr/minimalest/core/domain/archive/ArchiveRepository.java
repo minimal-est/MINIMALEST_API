@@ -13,6 +13,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Long> {
         SELECT a
         FROM Archive AS a
         JOIN FETCH a.member m
+        JOIN FETCH m.profile p
         WHERE a.author = :author
     """)
     Optional<Archive> findByAuthor(String author);
@@ -21,6 +22,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Long> {
         SELECT a
         FROM Archive AS a
         JOIN FETCH a.member m
+        JOIN FETCH m.profile p
         WHERE a.author = :author AND m.email = :email
     """)
     Optional<Archive> findByAuthorAndMemberEmail(String author, String email);
