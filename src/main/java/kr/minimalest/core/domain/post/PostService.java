@@ -25,6 +25,7 @@ public class PostService {
     private final PostCreator postCreator;
     private final ContentHelper contentHelper;
 
+    @Transactional(readOnly = true)
     public Slice<PostPreviewResponse> findAllPostViewInFolder(String author, Long folderId, @Nullable Pageable pageable) {
         return postRepository.findPostPreviewsInFolderByAuthor(author, folderId, pageable);
     }
