@@ -59,6 +59,22 @@ public class PostService {
         return postCreator.create(author, email, request);
     }
 
+    @Transactional
+    public void setRepresentative(String author, long sequence) {
+        Post post = postRepository.findWithArchive(author, sequence)
+                .orElseThrow(() -> new EntityNotFoundException("해당 포스트는 존재하지 않습니다!"));
+
+        postRepository.findRepresentative(author).ifPresent((representativePost) -> {
+            if (!post.equals(representativePost)) {
+                representativePost.updateRole(PostRole.NONE);
+            }
+        });
+
+        if (post.getPostRole() != PostRole.REPRESENTATIVE) {
+            post.updateRole(PostRole.REPRESENTATIVE);
+        }
+    }
+
     private Post validateAndFindPost(String author, long sequence) {
         Optional<Post> optionalPost = postRepository.findWithArchive(author, sequence);
         return optionalPost.orElseThrow(() -> new EntityNotFoundException("해당 포스트는 존재하지 않습니다!"));

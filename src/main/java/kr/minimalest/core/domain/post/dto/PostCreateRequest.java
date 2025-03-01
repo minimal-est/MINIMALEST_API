@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.post.Post;
+import kr.minimalest.core.domain.post.PostRole;
 import kr.minimalest.core.domain.post.PostStatus;
 import lombok.Data;
 
@@ -30,6 +31,7 @@ public class PostCreateRequest {
                 .hasThumbnail(hasThumbnail)
                 .thumbnailUrl(thumbnailUrl)
                 .postStatus(PostStatus.PUBLISHED)
+                .postRole(PostRole.NONE)
                 .build();
     }
 }
