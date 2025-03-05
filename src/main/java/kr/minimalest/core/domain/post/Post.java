@@ -55,6 +55,11 @@ public class Post extends BaseColumn {
 
     @Enumerated(EnumType.STRING)
     private PostRole postRole;
+
+    public void updateStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
+    }
+
     public void updateRole(PostRole postRole) {
         this.postRole = postRole;
     }

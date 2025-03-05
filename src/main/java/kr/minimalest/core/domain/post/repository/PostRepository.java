@@ -2,6 +2,7 @@ package kr.minimalest.core.domain.post.repository;
 
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.post.Post;
+import kr.minimalest.core.domain.post.PostRole;
 import kr.minimalest.core.domain.post.dto.PostViewResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -42,6 +43,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
                 p.content,
                 p.folder.id,
                 p.folder.name,
+                p.postRole,
                 p.createdAt,
                 p.lastModifiedAt
             )

@@ -6,6 +6,7 @@ import kr.minimalest.core.common.annotation.Authenticate;
 import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderView;
+import kr.minimalest.core.domain.post.PostRole;
 import kr.minimalest.core.domain.post.PostService;
 import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
@@ -98,6 +99,30 @@ public class ArchiveApi {
     ) {
         PostPreviewResponse postPreviewResponse = postService.findPostPreview(author, sequence);
         return ApiResponse.success(postPreviewResponse);
+    }
+
+    @Authenticate
+    @PutMapping("/{author}/post/{sequence}/role/REPRESENTATIVE")
+    public ApiResponse<?> setRepresentativeRole(
+            @PathVariable String author,
+            @PathVariable long sequence,
+            @AuthenticatedMemberEmail String email
+    ) {
+        archiveService.validateArchive(author, email);
+        postService.setRepresentative(author, sequence);
+        return ApiResponse.success("성공적으로 반영되었습니다.");
+    }
+
+    @Authenticate
+    @PutMapping("/{author}/post/{sequence}/role/NONE")
+    public ApiResponse<?> setNoneRole(
+            @PathVariable String author,
+            @PathVariable long sequence,
+            @AuthenticatedMemberEmail String email
+    ) {
+        archiveService.validateArchive(author, email);
+        postService.setNone(author, sequence);
+        return ApiResponse.success("성공적으로 반영되었습니다.");
     }
 
     @GetMapping("/{author}/folder/{folderId}/post")

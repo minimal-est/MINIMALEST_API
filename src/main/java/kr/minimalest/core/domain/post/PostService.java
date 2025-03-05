@@ -67,10 +67,9 @@ public class PostService {
 
     @Transactional
     public void setRepresentative(String author, long sequence) {
-        Post post = postRepository.findWithArchive(author, sequence)
-                .orElseThrow(() -> new EntityNotFoundException("해당 포스트는 존재하지 않습니다!"));
+        Post post = validateAndFindPost(author, sequence);
 
-        postRepository.findRepresentative(author).ifPresent((representativePost) -> {
+        postRepository.findWithRole(author, PostRole.REPRESENTATIVE).ifPresent((representativePost) -> {
             if (!post.equals(representativePost)) {
                 representativePost.updateRole(PostRole.NONE);
             }
@@ -79,6 +78,12 @@ public class PostService {
         if (post.getPostRole() != PostRole.REPRESENTATIVE) {
             post.updateRole(PostRole.REPRESENTATIVE);
         }
+    }
+
+    @Transactional
+    public void setNone(String author, long sequence) {
+        Post post = validateAndFindPost(author, sequence);
+        post.updateRole(PostRole.NONE);
     }
 
     private Post validateAndFindPost(String author, long sequence) {
