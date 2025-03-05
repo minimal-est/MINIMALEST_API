@@ -54,6 +54,12 @@ public class PostService {
         return PostViewResponse.fromEntity(post);
     }
 
+    public PostViewResponse findPostViewWithRole(String author, PostRole postRole) {
+        Post repPost = postRepository.findWithRole(author, postRole)
+                .orElseThrow(() -> new EntityNotFoundException(postRole.name() + " 포스트가 존재하지 않습니다!"));
+        return PostViewResponse.fromEntity(repPost);
+    }
+
     @Transactional
     public PostCreateResponse create(String author, String email, PostCreateRequest request) {
         return postCreator.create(author, email, request);

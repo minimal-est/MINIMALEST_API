@@ -2,6 +2,7 @@ package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import kr.minimalest.core.domain.post.Post;
+import kr.minimalest.core.domain.post.PostRole;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class PostViewResponse {
     private String content;
     private Long folderId;
     private String folderName;
+    private PostRole postRole;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
@@ -30,6 +32,7 @@ public class PostViewResponse {
                 .content(post.getContent())
                 .folderId(post.getFolder().getId())
                 .folderName(post.getFolder().getName())
+                .postRole(post.getPostRole())
                 .createdAt(post.getCreatedAt())
                 .lastModifiedAt(post.getLastModifiedAt())
                 .build();

@@ -72,6 +72,16 @@ public class ArchiveApi {
         return ApiResponse.success(postViewResponse);
     }
 
+    @GetMapping("/{author}/post/role/{postRole}")
+    public ApiResponse<?> findPostWithRole(
+            @PathVariable String author,
+            @PathVariable PostRole postRole
+    ) {
+        log.info(postRole.name());
+        PostViewResponse postViewResponse = postService.findPostViewWithRole(author, postRole);
+        return ApiResponse.success(postViewResponse);
+    }
+
     @GetMapping("/{author}/post/preview")
     public ApiResponse<?> findAllPostPreview(
             @PathVariable String author,

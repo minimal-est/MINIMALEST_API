@@ -69,8 +69,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("""
             SELECT p
             FROM Post AS p
+            JOIN FETCH p.archive a
+            JOIN FETCH p.folder f
             WHERE p.archive.author = :author
-            AND p.postRole = kr.minimalest.core.domain.post.PostRole.REPRESENTATIVE
+            AND p.postRole = :postRole
     """)
-    Optional<Post> findRepresentative(String author);
+    Optional<Post> findWithRole(String author, PostRole postRole);
 }
