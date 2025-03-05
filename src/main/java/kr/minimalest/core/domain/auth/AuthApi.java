@@ -52,16 +52,11 @@ public class AuthApi {
             @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
             HttpServletResponse response
     ) {
-        if (StringUtils.hasText(refreshToken) && authService.isValidRefreshToken(refreshToken)) {
-            String email = authService.extractEmailFromToken(refreshToken);
-
-            // 새로운 Access Token 발급 및 헤더 추가
-            String newAccessToken = authService.generateAccessToken(email);
-            setAccessTokenHeader(newAccessToken, response);
-
-            return ApiResponse.success();
-        } else {
-            return ApiResponse.error(HttpStatus.UNAUTHORIZED, "올바르지 않은 Refresh Token 입니다.");
+        try {
+            authService.refreshAccessTokenWithHeader(refreshToken, response);
+            return ApiResponse.success("리프레시 토큰이 재발급되었습니다.");
+        } catch (IllegalStateException exception) {
+            return ApiResponse.error(HttpStatus.UNAUTHORIZED, "권한이 없습니다!");
         }
     }
 
