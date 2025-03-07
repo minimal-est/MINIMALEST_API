@@ -7,7 +7,7 @@ import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.post.PostRole;
-import kr.minimalest.core.domain.post.PostService;
+import kr.minimalest.core.domain.post.service.PostService;
 import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
 import kr.minimalest.core.domain.post.PostStatus;

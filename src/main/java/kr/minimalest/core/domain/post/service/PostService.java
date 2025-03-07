@@ -1,8 +1,11 @@
-package kr.minimalest.core.domain.post;
+package kr.minimalest.core.domain.post.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.folder.FolderRepository;
+import kr.minimalest.core.domain.post.Post;
+import kr.minimalest.core.domain.post.PostRole;
+import kr.minimalest.core.domain.post.PostStatus;
 import kr.minimalest.core.domain.post.dto.*;
 import kr.minimalest.core.domain.post.repository.PostRepository;
 import kr.minimalest.core.domain.post.service.ContentHelper;
