@@ -33,6 +33,8 @@ public class PostPreviewResponse {
     @Schema(description = "썸네일 URL", example = "http://example.com/thumbnail.png")
     private String thumbnailUrl;
 
+    private boolean isModified;
+
     @Schema(description = "포스트 생성 일시", example = "2025-02-08 13:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
@@ -51,6 +53,7 @@ public class PostPreviewResponse {
                 .thumbnailUrl(post.getThumbnailUrl())
                 .createdAt(post.getCreatedAt())
                 .lastModifiedAt(post.getLastModifiedAt())
+                .isModified(post.isModified())
                 .build();
     }
 }

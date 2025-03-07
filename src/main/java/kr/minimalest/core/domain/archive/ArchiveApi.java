@@ -74,6 +74,27 @@ public class ArchiveApi {
         return ApiResponse.success(postViewResponse);
     }
 
+    @Authenticate
+    @DeleteMapping("/{author}/post/{sequence}")
+    public ApiResponse<?> deletePost(
+            @PathVariable String author,
+            @PathVariable long sequence
+    ) {
+        postService.updatePostStatus(author, sequence, PostStatus.DELETED);
+        return ApiResponse.success("성공적으로 삭제되었습니다.");
+    }
+
+    @Authenticate
+    @PutMapping("/{author}/post/{sequence}")
+    public ApiResponse<?> modifyPost(
+            @PathVariable String author,
+            @PathVariable long sequence,
+            @Valid @RequestBody PostCreateRequest postCreateRequest
+    ) {
+        PostCreateResponse postCreateResponse = postService.updatePost(author, sequence, postCreateRequest);
+        return ApiResponse.success(postCreateResponse);
+    }
+
     @GetMapping("/{author}/post/role/{postRole}")
     public ApiResponse<?> findPostWithRole(
             @PathVariable String author,

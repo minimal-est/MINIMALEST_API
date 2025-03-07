@@ -35,6 +35,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 JOIN FETCH p.archive
                 JOIN FETCH p.folder
                 WHERE p.archive.author = :author AND p.folder.id = :folderId
+                AND p.postStatus = 'PUBLISHED'
                 """;
 
         query = appendOrderBy(query, pageable.getSort());
@@ -65,6 +66,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 JOIN FETCH p.archive
                 JOIN FETCH p.folder
                 WHERE p.archive.author = :author
+                AND p.postStatus = 'PUBLISHED'
                 """;
 
         query = appendOrderBy(query, pageable.getSort());

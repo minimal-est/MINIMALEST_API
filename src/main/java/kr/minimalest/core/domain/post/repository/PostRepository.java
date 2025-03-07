@@ -23,6 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             JOIN FETCH p.archive a
             JOIN FETCH p.folder
             WHERE a.author = :author
+            AND p.postStatus = 'PUBLISHED'
     """)
     List<Post> findAllByArchiveAuthor(String author);
 
@@ -32,6 +33,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             FROM Post AS p
             JOIN FETCH p.archive a
             WHERE a.author = :author AND p.sequence = :sequence
+            AND p.postStatus = 'PUBLISHED'
     """)
     Optional<Post> findWithArchive(String author, long sequence);
 
@@ -49,6 +51,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             )
             FROM Post AS p
             WHERE p.archive.author = :author
+            AND p.postStatus = 'PUBLISHED'
     """)
     Slice<PostViewResponse> findAllView(String author, Pageable pageable);
 
@@ -75,6 +78,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             JOIN FETCH p.folder f
             WHERE p.archive.author = :author
             AND p.postRole = :postRole
+            AND p.postStatus = 'PUBLISHED'
     """)
     Optional<Post> findWithRole(String author, PostRole postRole);
 }

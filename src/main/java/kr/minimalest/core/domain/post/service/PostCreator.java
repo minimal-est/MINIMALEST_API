@@ -6,4 +6,6 @@ import kr.minimalest.core.domain.post.dto.PostCreateResponse;
 public interface PostCreator {
 
     PostCreateResponse create(String author, String email, PostCreateRequest request);
+
+    PostCreateResponse update(String author, long sequence, PostCreateRequest request);
 }

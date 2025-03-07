@@ -3,12 +3,8 @@ package kr.minimalest.core.domain.post.service;
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.archive.ArchiveRepository;
-import kr.minimalest.core.domain.archive.ArchiveService;
-import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.folder.FolderRepository;
-import kr.minimalest.core.domain.folder.FolderService;
-import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.post.*;
 import kr.minimalest.core.domain.post.dto.PostCreateRequest;
 import kr.minimalest.core.domain.post.dto.PostCreateResponse;
@@ -32,14 +28,13 @@ public class PostCreateService implements PostCreator {
     private final PostThumbnailService postThumbnailService;
     private final Extractor extractor;
 
+    @Override
     @Transactional
     public PostCreateResponse create(String author, String email, PostCreateRequest request) {
         // 폴더 및 아카이브 검증
-        Folder folder = folderRepository.findById(request.getFolderId())
-                .orElseThrow(() -> new EntityNotFoundException("폴더가 존재하지 않습니다!"));
+        Folder folder = findFolder(request.getFolderId());
 
-        Archive archive = archiveRepository.findByAuthor(author)
-                .orElseThrow(() -> new EntityNotFoundException("아카이브가 존재하지 않습니다!"));
+        Archive archive = findArchive(author);
 
         // 아카이브의 Post Sequence 더하기
         long nextSequence = postRepository.findMaxSequenceByArchive(author) + 1;
@@ -64,5 +59,41 @@ public class PostCreateService implements PostCreator {
         postImageService.processSaveImages(images, post);
 
         return new PostCreateResponse(author, nextSequence);
+    }
+
+    @Override
+    @Transactional
+    public PostCreateResponse update(String author, long sequence, PostCreateRequest request) {
+        Post post = findPost(author, sequence);
+        Folder folder = findFolder(request.getFolderId());
+
+        List<Image> images = extractor.extract(request.getContent(), Image.class);
+        Optional<Image> optionalImage = PostImageService.extractFirstImage(images);
+
+        // 썸네일 저장 및 업로드 후 URL 생성
+        String thumbnailUrl = optionalImage.map(image -> postThumbnailService.createThumbnailUrl(image, post)).orElse(null);
+
+        // 더티 체킹 업데이트
+        post.updateThumbnailUrl(thumbnailUrl);
+        post.updateTitle(request.getTitle());
+        post.updateContent(request.getContent());
+        post.updateFolder(folder);
+
+        return new PostCreateResponse(author, sequence);
+    }
+
+    private Post findPost(String author, long sequence) {
+        return postRepository.findWithArchive(author, sequence)
+                .orElseThrow(() -> new EntityNotFoundException("포스트가 존재하지 않습니다!"));
+    }
+
+    private Archive findArchive(String author) {
+        return archiveRepository.findByAuthor(author)
+                .orElseThrow(() -> new EntityNotFoundException("아카이브가 존재하지 않습니다!"));
+    }
+
+    private Folder findFolder(Long folderId) {
+        return folderRepository.findById(folderId)
+                .orElseThrow(() -> new EntityNotFoundException("폴더가 존재하지 않습니다!"));
     }
 }

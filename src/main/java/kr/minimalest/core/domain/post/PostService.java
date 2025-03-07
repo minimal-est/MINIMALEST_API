@@ -2,6 +2,7 @@ package kr.minimalest.core.domain.post;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.folder.Folder;
+import kr.minimalest.core.domain.folder.FolderRepository;
 import kr.minimalest.core.domain.post.dto.*;
 import kr.minimalest.core.domain.post.repository.PostRepository;
 import kr.minimalest.core.domain.post.service.ContentHelper;
@@ -14,14 +15,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final FolderRepository folderRepository;
     private final PostCreator postCreator;
     private final ContentHelper contentHelper;
 
@@ -37,9 +37,8 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostPreviewResponse findPostPreview(String author, Long sequence) {
-        Post post = validateAndFindPost(author, sequence);
-        Folder folder = postRepository.findFolder(post)
-                .orElseThrow(() -> new EntityNotFoundException("해당 포스트의 폴더가 존재하지 않습니다."));
+        Post post = findPost(author, sequence);
+        Folder folder = findFolder(post);
         return PostPreviewResponse.fromEntity(post, folder.getName(), contentHelper);
     }
 
@@ -50,8 +49,20 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostViewResponse findPostView(String author, Long sequence) {
-        Post post = validateAndFindPost(author, sequence);
+        Post post = findPost(author, sequence);
         return PostViewResponse.fromEntity(post);
+    }
+
+    @Transactional
+    public void updatePostStatus(String author, long sequence, PostStatus status) {
+        Post post = findPost(author, sequence);
+        if (post.getPostStatus() == status) return;
+        post.updateStatus(PostStatus.DELETED);
+    }
+
+    @Transactional
+    public PostCreateResponse updatePost(String author, long sequence, PostCreateRequest postCreateRequest) {
+        return postCreator.update(author, sequence, postCreateRequest);
     }
 
     public PostViewResponse findPostViewWithRole(String author, PostRole postRole) {
@@ -67,7 +78,7 @@ public class PostService {
 
     @Transactional
     public void setRepresentative(String author, long sequence) {
-        Post post = validateAndFindPost(author, sequence);
+        Post post = findPost(author, sequence);
 
         postRepository.findWithRole(author, PostRole.REPRESENTATIVE).ifPresent((representativePost) -> {
             if (!post.equals(representativePost)) {
@@ -82,12 +93,22 @@ public class PostService {
 
     @Transactional
     public void setNone(String author, long sequence) {
-        Post post = validateAndFindPost(author, sequence);
+        Post post = findPost(author, sequence);
         post.updateRole(PostRole.NONE);
     }
 
-    private Post validateAndFindPost(String author, long sequence) {
-        Optional<Post> optionalPost = postRepository.findWithArchive(author, sequence);
-        return optionalPost.orElseThrow(() -> new EntityNotFoundException("해당 포스트는 존재하지 않습니다!"));
+    private Post findPost(String author, long sequence) {
+        return postRepository.findWithArchive(author, sequence)
+                .orElseThrow(() -> new EntityNotFoundException("해당 포스트는 존재하지 않습니다!"));
+    }
+
+    private Folder findFolder(Post post) {
+        return postRepository.findFolder(post)
+                .orElseThrow(() -> new EntityNotFoundException("해당 포스트의 폴더가 존재하지 않습니다!"));
+    }
+
+    private Folder findFolder(Long folderId) {
+        return folderRepository.findById(folderId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 폴더가 존재하지 않습니다!"));
     }
 }
