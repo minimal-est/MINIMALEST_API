@@ -10,6 +10,7 @@ import kr.minimalest.core.domain.post.PostRole;
 import kr.minimalest.core.domain.post.PostService;
 import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
+import kr.minimalest.core.domain.post.PostStatus;
 import kr.minimalest.core.domain.post.dto.PostCreateRequest;
 import kr.minimalest.core.domain.post.dto.PostCreateResponse;
 import kr.minimalest.core.domain.post.dto.PostPreviewResponse;
@@ -67,7 +68,7 @@ public class ArchiveApi {
     @GetMapping("/{author}/post/{sequence}")
     public ApiResponse<?> findPost(
             @PathVariable String author,
-            @PathVariable Long sequence
+            @PathVariable long sequence
     ) {
         PostViewResponse postViewResponse = postService.findPostView(author, sequence);
         return ApiResponse.success(postViewResponse);
@@ -95,7 +96,7 @@ public class ArchiveApi {
     @GetMapping("/{author}/post/{sequence}/preview")
     public ApiResponse<?> findPostPreview(
             @PathVariable String author,
-            @PathVariable Long sequence
+            @PathVariable long sequence
     ) {
         PostPreviewResponse postPreviewResponse = postService.findPostPreview(author, sequence);
         return ApiResponse.success(postPreviewResponse);
