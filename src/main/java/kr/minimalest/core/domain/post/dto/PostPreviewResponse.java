@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.minimalest.core.domain.post.service.ContentHelper;
 import kr.minimalest.core.domain.post.Post;
@@ -33,6 +34,7 @@ public class PostPreviewResponse {
     @Schema(description = "썸네일 URL", example = "http://example.com/thumbnail.png")
     private String thumbnailUrl;
 
+    @JsonProperty("isModified")
     private boolean isModified;
 
     @Schema(description = "포스트 생성 일시", example = "2025-02-08 13:00")

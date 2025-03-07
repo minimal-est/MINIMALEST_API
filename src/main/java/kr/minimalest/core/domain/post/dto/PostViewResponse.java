@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.PostRole;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ public class PostViewResponse {
     private Long folderId;
     private String folderName;
     private PostRole postRole;
+
+    @JsonProperty("isModified")
     private boolean isModified;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
