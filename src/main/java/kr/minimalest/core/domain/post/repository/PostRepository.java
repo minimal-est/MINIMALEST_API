@@ -80,5 +80,23 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             AND p.postRole = :postRole
             AND p.postStatus = 'PUBLISHED'
     """)
-    Optional<Post> findWithRole(String author, PostRole postRole);
+    Slice<Post> findAllWithRole(String author, PostRole postRole);
+
+    @Query(value = """
+            SELECT new kr.minimalest.core.domain.post.dto.PostViewResponse(
+                p.archive.author,
+                p.title,
+                p.content,
+                p.folder.id,
+                p.folder.name,
+                p.postRole,
+                p.createdAt,
+                p.lastModifiedAt
+            )
+            FROM Post AS p
+            WHERE p.archive.author = :author
+            AND p.postRole = :postRole
+            AND p.postStatus = 'PUBLISHED'
+    """)
+    Slice<PostViewResponse> findAllViewWithRole(String author, PostRole postRole, Pageable pageable);
 }

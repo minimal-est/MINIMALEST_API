@@ -53,6 +53,11 @@ public class PostService {
         return PostViewResponse.fromEntity(post);
     }
 
+    @Transactional(readOnly = true)
+    public Slice<PostViewResponse> findAllPostViewWithRole(String author, PostRole postRole, Pageable pageable) {
+        return postRepository.findAllViewWithRole(author, postRole, pageable);
+    }
+
     @Transactional
     public void updatePostStatus(String author, long sequence, PostStatus status) {
         Post post = findPost(author, sequence);
@@ -65,12 +70,6 @@ public class PostService {
         return postCreator.update(author, sequence, postCreateRequest);
     }
 
-    public PostViewResponse findPostViewWithRole(String author, PostRole postRole) {
-        Post repPost = postRepository.findWithRole(author, postRole)
-                .orElseThrow(() -> new EntityNotFoundException(postRole.name() + " 포스트가 존재하지 않습니다!"));
-        return PostViewResponse.fromEntity(repPost);
-    }
-
     @Transactional
     public PostCreateResponse create(String author, String email, PostCreateRequest request) {
         return postCreator.create(author, email, request);
@@ -80,11 +79,8 @@ public class PostService {
     public void setRepresentative(String author, long sequence) {
         Post post = findPost(author, sequence);
 
-        postRepository.findWithRole(author, PostRole.REPRESENTATIVE).ifPresent((representativePost) -> {
-            if (!post.equals(representativePost)) {
-                representativePost.updateRole(PostRole.NONE);
-            }
-        });
+        Slice<Post> posts = postRepository.findAllWithRole(author, PostRole.REPRESENTATIVE);
+        posts.stream().forEach(repPost -> repPost.updateRole(PostRole.NONE));
 
         if (post.getPostRole() != PostRole.REPRESENTATIVE) {
             post.updateRole(PostRole.REPRESENTATIVE);

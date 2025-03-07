@@ -74,6 +74,16 @@ public class ArchiveApi {
         return ApiResponse.success(postViewResponse);
     }
 
+    @GetMapping("/{author}/post/role/{postRole}")
+    public ApiResponse<?> findAllPostWithRole(
+            @PathVariable String author,
+            @PathVariable PostRole postRole,
+            @PageableDefault Pageable pageable
+    ) {
+        Slice<PostViewResponse> postViewResponse = postService.findAllPostViewWithRole(author, postRole, pageable);
+        return ApiResponse.success(postViewResponse);
+    }
+
     @Authenticate
     @DeleteMapping("/{author}/post/{sequence}")
     public ApiResponse<?> deletePost(
@@ -93,16 +103,6 @@ public class ArchiveApi {
     ) {
         PostCreateResponse postCreateResponse = postService.updatePost(author, sequence, postCreateRequest);
         return ApiResponse.success(postCreateResponse);
-    }
-
-    @GetMapping("/{author}/post/role/{postRole}")
-    public ApiResponse<?> findPostWithRole(
-            @PathVariable String author,
-            @PathVariable PostRole postRole
-    ) {
-        log.info(postRole.name());
-        PostViewResponse postViewResponse = postService.findPostViewWithRole(author, postRole);
-        return ApiResponse.success(postViewResponse);
     }
 
     @GetMapping("/{author}/post/preview")
