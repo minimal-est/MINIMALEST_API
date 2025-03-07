@@ -12,7 +12,7 @@ public class ArchiveInfoResponse {
     private String mainTitle;
     private String subTitle;
     private String email;
-    private String profile_image_url;
+    private String profileImageUrl;
 
     public static ArchiveInfoResponse fromEntity(Archive archive) {
         return ArchiveInfoResponse.builder()
@@ -20,7 +20,7 @@ public class ArchiveInfoResponse {
                 .mainTitle(archive.getMainTitle())
                 .subTitle(archive.getSubTitle())
                 .email(archive.getMember().getEmail())
-                .profile_image_url(archive.getMember().getProfile().getProfile_image_url())
+                .profileImageUrl(archive.getMember().getProfile().getProfileImageUrl())
                 .build();
     }
 }

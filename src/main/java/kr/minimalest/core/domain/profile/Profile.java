@@ -21,5 +21,5 @@ public class Profile {
     private Member member;
 
     @Column(nullable = true)
-    private String profile_image_url;
+    private String profileImageUrl;
 }
