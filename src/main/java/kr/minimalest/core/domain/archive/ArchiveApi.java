@@ -43,15 +43,6 @@ public class ArchiveApi {
         return ApiResponse.success(archiveInfoResponse);
     }
 
-    @GetMapping("/{author}/post")
-    public ApiResponse<?> findAllPost(
-            @PathVariable String author,
-            @PageableDefault Pageable pageable
-    ) {
-        Slice<PostViewResponse> postViewResponses = postService.findAllPostView(author, pageable);
-        return ApiResponse.success(postViewResponses);
-    }
-
     @Authenticate
     @PostMapping("/{author}/post")
     public ApiResponse<?> createPost(
@@ -80,8 +71,8 @@ public class ArchiveApi {
             @PathVariable PostRole postRole,
             @PageableDefault Pageable pageable
     ) {
-        Slice<PostViewResponse> postViewResponse = postService.findAllPostViewWithRole(author, postRole, pageable);
-        return ApiResponse.success(postViewResponse);
+        Slice<PostViewResponse> postViewResponses = postService.findAllPostViewWithRole(author, postRole, pageable);
+        return ApiResponse.success(postViewResponses);
     }
 
     @Authenticate
