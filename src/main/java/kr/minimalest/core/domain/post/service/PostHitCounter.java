@@ -13,12 +13,10 @@ public class PostHitCounter {
     private final HitCountStorage<PostViewKey> hitCountStorage;
 
     public void incrementHitCount(PostViewKey key) {
-        log.info("Post: {}, incrementHitCount!", key);
         hitCountStorage.increment(key);
     }
 
     public long getHitCount(PostViewKey key) {
-        log.info("Post: {}, HitCount: {}", key, hitCountStorage.get(key));
         return hitCountStorage.get(key);
     }
 

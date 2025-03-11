@@ -7,6 +7,7 @@ import kr.minimalest.core.domain.post.PostRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +17,15 @@ import java.time.LocalDateTime;
 public class PostViewResponse {
 
     private String author;
+    private Long sequence;
     private String title;
     private String content;
     private Long folderId;
     private String folderName;
     private PostRole postRole;
+
+    @Setter
+    private long hitCount;
 
     @JsonProperty("isModified")
     private boolean isModified;
@@ -34,6 +39,7 @@ public class PostViewResponse {
     public PostViewResponse(
             String author,
             String title,
+            Long sequence,
             String content,
             Long folderId,
             String folderName,
@@ -42,6 +48,7 @@ public class PostViewResponse {
             LocalDateTime lastModifiedAt) {
         this.author = author;
         this.title = title;
+        this.sequence = sequence;
         this.content = content;
         this.folderId = folderId;
         this.folderName = folderName;
@@ -56,6 +63,7 @@ public class PostViewResponse {
                 .author(post.getArchive().getAuthor())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .sequence(post.getSequence())
                 .folderId(post.getFolder().getId())
                 .folderName(post.getFolder().getName())
                 .postRole(post.getPostRole())

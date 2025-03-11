@@ -20,5 +20,8 @@ public class PostHitBatch {
         postHitCounter.getHitCountStorage().getAllHitCounts().forEach(((postViewKey, atomicHitCount) -> {
             postHitService.flushHitCount(postViewKey);
         }));
+
+        // IP 캐시 초기화
+        postHitService.clearIpChecker();
     }
 }

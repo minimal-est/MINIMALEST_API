@@ -1,15 +1,15 @@
 package kr.minimalest.core.domain.post.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.minimalest.core.common.annotation.PostHitCount;
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.folder.FolderRepository;
 import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.PostRole;
 import kr.minimalest.core.domain.post.PostStatus;
+import kr.minimalest.core.domain.post.PostViewKey;
 import kr.minimalest.core.domain.post.dto.*;
 import kr.minimalest.core.domain.post.repository.PostRepository;
-import kr.minimalest.core.domain.post.service.ContentHelper;
-import kr.minimalest.core.domain.post.service.PostCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -45,11 +45,7 @@ public class PostService {
         return PostPreviewResponse.fromEntity(post, folder.getName(), contentHelper);
     }
 
-    @Transactional(readOnly = true)
-    public Slice<PostViewResponse> findAllPostView(String author, @Nullable Pageable pageable) {
-        return postRepository.findAllView(author, pageable);
-    }
-
+    @PostHitCount
     @Transactional(readOnly = true)
     public PostViewResponse findPostView(String author, Long sequence) {
         Post post = findPost(author, sequence);
@@ -82,7 +78,7 @@ public class PostService {
     public void setRepresentative(String author, long sequence) {
         Post post = findPost(author, sequence);
 
-        Slice<Post> posts = postRepository.findAllWithRole(author, PostRole.REPRESENTATIVE);
+        Slice<Post> posts = postRepository.findAllWithRole(author, PostRole.REPRESENTATIVE, null);
         posts.stream().forEach(repPost -> repPost.updateRole(PostRole.NONE));
 
         if (post.getPostRole() != PostRole.REPRESENTATIVE) {

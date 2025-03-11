@@ -42,6 +42,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             SELECT new kr.minimalest.core.domain.post.dto.PostViewResponse(
                 p.archive.author,
                 p.title,
+                p.sequence,
                 p.content,
                 p.folder.id,
                 p.folder.name,
@@ -80,12 +81,13 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
             AND p.postRole = :postRole
             AND p.postStatus = 'PUBLISHED'
     """)
-    Slice<Post> findAllWithRole(String author, PostRole postRole);
+    Slice<Post> findAllWithRole(String author, PostRole postRole, Pageable pageable);
 
     @Query(value = """
             SELECT new kr.minimalest.core.domain.post.dto.PostViewResponse(
                 p.archive.author,
                 p.title,
+                p.sequence,
                 p.content,
                 p.folder.id,
                 p.folder.name,

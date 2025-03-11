@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import kr.minimalest.core.domain.base.BaseColumn;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class PostHit extends BaseColumn {

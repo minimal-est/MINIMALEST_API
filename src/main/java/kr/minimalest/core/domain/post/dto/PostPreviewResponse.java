@@ -8,6 +8,7 @@ import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.utils.PostConstants;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +34,9 @@ public class PostPreviewResponse {
 
     @Schema(description = "썸네일 URL", example = "http://example.com/thumbnail.png")
     private String thumbnailUrl;
+
+    @Setter
+    private long hitCount;
 
     @JsonProperty("isModified")
     private boolean isModified;

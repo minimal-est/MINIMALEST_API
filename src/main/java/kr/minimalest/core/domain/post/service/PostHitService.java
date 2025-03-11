@@ -1,6 +1,5 @@
 package kr.minimalest.core.domain.post.service;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.post.PostHit;
 import kr.minimalest.core.domain.post.PostViewKey;
@@ -18,11 +17,6 @@ public class PostHitService {
     private final PostHitCounter postHitCounter;
     private final PostHitRepository postHitRepository;
     private final IpChecker<PostViewKey> ipChecker;
-
-    @PostConstruct
-    public void init() {
-        
-    }
 
     @Transactional
     public void createPostHit(PostViewKey postViewKey) {
