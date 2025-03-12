@@ -27,17 +27,36 @@ public class Member extends BaseColumn {
     @Column(nullable = false)
     private String encPassword;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private UserLevel userLevel;
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Archive> archives = new ArrayList<>();
 
     // 회원과 프로필은 라이프 사이클이 필요하므로 양방향 연관관계가 필요합니다.
-    @Setter
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
+
+    public static Member join(
+            String username,
+            String rawPassword,
+            String email
+    ) {
+        return Member.builder()
+                .username(username)
+                .encPassword(MemberUtils.encodePassword(rawPassword))
+                .email(email)
+                .build();
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+        profile.setMember(this);
+    }
 
     public void addArchive(Archive archive) {
         this.archives.add(archive);

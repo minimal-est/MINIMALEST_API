@@ -3,10 +3,14 @@ package kr.minimalest.core.domain.member;
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.auth.dto.LoginRequest;
 import kr.minimalest.core.domain.member.dto.MemberFindResponse;
+import kr.minimalest.core.domain.member.dto.MemberJoinRequest;
+import kr.minimalest.core.domain.member.dto.MemberJoinResponse;
 import kr.minimalest.core.domain.member.exception.MemberValidationException;
+import kr.minimalest.core.domain.profile.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -15,6 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public MemberJoinResponse joinMember(MemberJoinRequest memberJoinRequest) {
+        Member member = MemberJoinRequest.toEntity(memberJoinRequest);
+        Profile profile = new Profile(memberJoinRequest.getProfileImageUrl());
+        member.setProfile(profile);
+        memberRepository.save(member);
+        return new MemberJoinResponse(member.getEmail());
+    }
 
     @Transactional(readOnly = true)
     public MemberFindResponse findAndValidate(String email, String author) {

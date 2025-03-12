@@ -1,7 +1,10 @@
 package kr.minimalest.core.domain.member;
 
+import jakarta.validation.Valid;
 import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.member.dto.MemberFindResponse;
+import kr.minimalest.core.domain.member.dto.MemberJoinRequest;
+import kr.minimalest.core.domain.member.dto.MemberJoinResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class MemberApi {
 
     private final MemberService memberService;
+
+    @PostMapping
+    public ApiResponse<?> joinMember(
+            @Valid @RequestBody MemberJoinRequest memberJoinRequest
+    ) {
+        MemberJoinResponse memberJoinResponse = memberService.joinMember(memberJoinRequest);
+        return ApiResponse.success(memberJoinResponse, "회원가입에 성공했습니다.");
+    }
 
     @GetMapping("/{email}/archive/{author}")
     public ApiResponse<?> findMember(
