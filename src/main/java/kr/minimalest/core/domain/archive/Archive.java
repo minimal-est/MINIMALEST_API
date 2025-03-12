@@ -13,7 +13,7 @@ import lombok.*;
 public class Archive extends BaseColumn {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "archive_id")
     private Long id;
 

@@ -16,7 +16,8 @@ import java.util.List;
 @Builder
 public class Member extends BaseColumn {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
