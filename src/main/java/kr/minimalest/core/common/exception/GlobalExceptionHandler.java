@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.common.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +46,12 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(" "));
 
         return ApiResponse.error(HttpStatus.BAD_REQUEST, joinedAllErrorMessages);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ApiResponse<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        // Spring JPA DB 무결성 제약조건 위반 시
+        return ApiResponse.error(HttpStatus.CONFLICT, ex.getMessage());
     }
 }
 
