@@ -3,15 +3,15 @@ package kr.minimalest.core.common.exception;
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.common.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
@@ -41,11 +41,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         // 모든 Validation 에러 메시지 받기
-        String joinedAllErrorMessages = ex.getBindingResult().getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining(" "));
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 
-        return ApiResponse.error(HttpStatus.BAD_REQUEST, joinedAllErrorMessages);
+        List<ValidationError> errors = fieldErrors.stream()
+                .map(fieldError -> new ValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .toList();
+
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, "유효한 값이 아닙니다.", errors);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

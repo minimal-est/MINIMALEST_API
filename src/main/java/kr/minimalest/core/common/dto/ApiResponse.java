@@ -44,4 +44,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> error(HttpStatus httpStatus, String message) {
         return new ApiResponse<>(httpStatus.value(), httpStatus.name(), message, null, LocalDateTime.now());
     }
+
+    public static <T> ApiResponse<T> error(HttpStatus httpStatus, String message, T data) {
+        return new ApiResponse<>(httpStatus.value(), httpStatus.name(), message, data, LocalDateTime.now());
+    }
 }
