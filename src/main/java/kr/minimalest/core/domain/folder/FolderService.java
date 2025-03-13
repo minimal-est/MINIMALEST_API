@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.folder;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.folder.dto.FolderWithPost;
 import kr.minimalest.core.domain.post.Post;
@@ -19,6 +20,16 @@ public class FolderService {
 
     private final FolderRepository folderRepository;
     private final PostRepository postRepository;
+
+    @Transactional
+    public Folder create(String name, Archive archive) {
+        Folder folder = Folder.builder()
+                .archive(archive)
+                .name(name)
+                .build();
+        folderRepository.save(folder);
+        return folder;
+    }
 
     @Transactional(readOnly = true)
     public FolderView validateFolder(Long id) {

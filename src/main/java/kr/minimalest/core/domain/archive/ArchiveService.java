@@ -1,7 +1,13 @@
 package kr.minimalest.core.domain.archive;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.minimalest.core.domain.archive.dto.ArchiveCreateRequest;
+import kr.minimalest.core.domain.archive.dto.ArchiveCreateResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
+import kr.minimalest.core.domain.folder.Folder;
+import kr.minimalest.core.domain.folder.FolderService;
+import kr.minimalest.core.domain.member.Member;
+import kr.minimalest.core.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +20,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ArchiveService {
 
+    private final FolderService folderService;
     private final ArchiveRepository archiveRepository;
+    private final MemberRepository memberRepository;
+
+    @Transactional
+    public ArchiveCreateResponse create(ArchiveCreateRequest request, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 회원은 존재하지 않습니다!"));
+        Archive archive = request.toEntity(member);
+        archiveRepository.save(archive);
+        folderService.create(request.getFirstFolderName(), archive);
+        return new ArchiveCreateResponse(archive.getAuthor());
+    }
 
     @Transactional(readOnly = true)
     public ArchiveInfoResponse validateArchive(String author, String email) {

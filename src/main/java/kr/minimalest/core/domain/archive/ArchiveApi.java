@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.minimalest.core.common.annotation.Authenticate;
 import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
+import kr.minimalest.core.domain.archive.dto.ArchiveCreateRequest;
+import kr.minimalest.core.domain.archive.dto.ArchiveCreateResponse;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.post.PostRole;
@@ -34,6 +36,16 @@ public class ArchiveApi {
     private final ArchiveService archiveService;
     private final PostService postService;
     private final FolderService folderService;
+
+    @Authenticate
+    @PostMapping
+    public ApiResponse<?> create(
+            @AuthenticatedMemberEmail String email,
+            @Valid @RequestBody ArchiveCreateRequest archiveCreateRequest
+    ) {
+        ArchiveCreateResponse archiveCreateResponse = archiveService.create(archiveCreateRequest, email);
+        return ApiResponse.success(archiveCreateResponse);
+    }
 
     @GetMapping("/{author}")
     public ApiResponse<?> findArchive(
