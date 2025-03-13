@@ -2,18 +2,27 @@ package kr.minimalest.core.domain.member.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import kr.minimalest.core.common.utils.RegexUtils;
 import kr.minimalest.core.domain.member.Member;
 import kr.minimalest.core.domain.member.MemberUtils;
 import kr.minimalest.core.domain.member.UserLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hibernate.validator.constraints.URL;
+
+import static kr.minimalest.core.domain.member.MemberConstants.*;
 
 @Data
 @AllArgsConstructor
 public class MemberJoinRequest {
 
     @NotBlank
+    @Size(min = USERNAME_MIN_LENGTH, max = USERNAME_MAX_LENGTH)
+    @Pattern(
+            regexp = RegexUtils.NO_SPECIAL_CHAR_PATTERN,
+            message = "대표이름은 특수문자와 공백이 포함될 수 없습니다."
+    )
     private String username;
 
     @NotBlank
@@ -23,7 +32,6 @@ public class MemberJoinRequest {
     @NotBlank
     private String email;
 
-    @URL
     private String profileImageUrl;
 
     public static Member toEntity(MemberJoinRequest memberJoinRequest) {
