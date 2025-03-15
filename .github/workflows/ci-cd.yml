@@ -44,6 +44,3 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/minimalest-api:latest
-
-      - name: Run docker compose
-        env:
