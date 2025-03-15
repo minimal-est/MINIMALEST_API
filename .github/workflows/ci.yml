@@ -1,4 +1,4 @@
-name: CI/CD workflow
+name: Minimalest CI
 
 on:
   push:
@@ -73,3 +73,14 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/minimalest-api:latest
+          build-args: |
+            SPRING_PROFILES_ACTIVE=prod
+            MYSQL_URL=${{ secrets.MYSQL_URL }}
+            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
+            MYSQL_DB_NAME=${{ secrets.MYSQL_DB_NAME }}
+            MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}
+            AWS_S3_SECRET_KEY=${{ secrets.AWS_S3_SECRET_KEY }}
+            AWS_S3_REGION=${{ secrets.AWS_S3_REGION }}
+            AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
