@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+  jackson:
+    time-zone: Asia/Seoul
+
+file:
+  proxy:
+    url: /api/file/proxy
+
+springdoc:
+  paths-to-match: /api/**
