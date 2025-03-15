@@ -43,3 +43,6 @@ application-dev.yml
 application-dev.properties
 application-prod.yml
 application-prod.properties
+
+### config env ###
+.env
