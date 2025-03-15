@@ -34,7 +34,9 @@ jobs:
           AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-        run: ./gradlew clean build
+        run: |
+          echo AWS_S3_REGION : $AWS_S3_REGION 
+          ./gradlew clean build
 
       - name: Upload jar artifact
         uses: actions/upload-artifact@v4
