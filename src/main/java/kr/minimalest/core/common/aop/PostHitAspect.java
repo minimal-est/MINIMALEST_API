@@ -70,9 +70,8 @@ public class PostHitAspect {
 
     private String getClientIp() {
         String clientIp = request.getHeader("X-Forwarded-For");
-        if (clientIp == null || clientIp.isEmpty()) {
-            clientIp = request.getRemoteAddr();
-        }
+        if (clientIp == null || clientIp.isEmpty()) {clientIp = request.getHeader("X-Real-IP");}
+        if (clientIp == null || clientIp.isEmpty()) {clientIp = request.getRemoteAddr();}
         return clientIp;
     }
 }
