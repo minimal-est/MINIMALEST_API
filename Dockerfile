@@ -26,5 +26,4 @@ ENV JWT_SECRET_KEY=$JWT_SECRET_KEY
 
 COPY build/libs/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
-CMD ["-Duser.timezone=Asia/Seoul"]
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
