@@ -6,11 +6,13 @@ import kr.minimalest.core.domain.file.FileUtils;
 import kr.minimalest.core.domain.file.dto.FileResponse;
 import kr.minimalest.core.domain.post.Post;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.commonmark.node.Image;
 import org.springframework.stereotype.Service;
 
 import java.io.OutputStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostThumbnailService {
@@ -27,6 +29,7 @@ public class PostThumbnailService {
     private FileResponse createAndUploadAndSaveThumbnail(Image image, Post post) {
         // 썸네일로 사용될 이미지 정보
         String serverHost = PostThumbnailHostResolver.getServerHost(request);
+        log.info(serverHost);
         String thumbnailUrl = serverHost + image.getDestination();
         String filename = FileUtils.extractKeyParameter(thumbnailUrl);
         String pureExt = FileUtils.extractPureExt(filename);
