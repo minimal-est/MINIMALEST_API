@@ -1,5 +1,6 @@
 package kr.minimalest.core.domain.post.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.minimalest.core.domain.file.FileService;
 import kr.minimalest.core.domain.file.FileUtils;
 import kr.minimalest.core.domain.file.dto.FileResponse;
@@ -16,6 +17,7 @@ public class PostThumbnailService {
 
     private final ThumbnailGenerator thumbnailGenerator;
     private final FileService fileService;
+    private final HttpServletRequest request;
 
     public String createThumbnailUrl(Image image, Post post) {
         FileResponse thumbnailFile = createAndUploadAndSaveThumbnail(image, post);
@@ -24,7 +26,8 @@ public class PostThumbnailService {
 
     private FileResponse createAndUploadAndSaveThumbnail(Image image, Post post) {
         // 썸네일로 사용될 이미지 정보
-        String thumbnailUrl = image.getDestination();
+        String serverHost = PostThumbnailHostResolver.getServerHost(request);
+        String thumbnailUrl = serverHost + image.getDestination();
         String filename = FileUtils.extractKeyParameter(thumbnailUrl);
         String pureExt = FileUtils.extractPureExt(filename);
         String contentType = FileUtils.toImageContentType(pureExt);
