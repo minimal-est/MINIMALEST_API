@@ -2,6 +2,9 @@ package kr.minimalest.core.domain.folder;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.archive.Archive;
+import kr.minimalest.core.domain.archive.ArchiveRepository;
+import kr.minimalest.core.domain.folder.dto.FolderCreateRequest;
+import kr.minimalest.core.domain.folder.dto.FolderCreateResponse;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.folder.dto.FolderWithPost;
 import kr.minimalest.core.domain.post.Post;
@@ -20,15 +23,32 @@ public class FolderService {
 
     private final FolderRepository folderRepository;
     private final PostRepository postRepository;
+    private final ArchiveRepository archiveRepository;
 
     @Transactional
-    public Folder create(String name, Archive archive) {
-        Folder folder = Folder.builder()
-                .archive(archive)
-                .name(name)
-                .build();
+    public FolderCreateResponse create(FolderCreateRequest folderCreateRequest, String author) {
+        Archive archive = archiveRepository.findByAuthor(author)
+                .orElseThrow(() -> new EntityNotFoundException("해당 아카이브는 존재하지 않습니다!"));
+        if (folderRepository.findByNameAndArchiveAuthor(folderCreateRequest.getName(), author).isPresent()) {
+            // 이미 존재하는 이름의 폴더라면 예외 발생
+            throw new IllegalArgumentException("해당 폴더 이름이 이미 존재합니다!");
+        };
+        Folder folder = folderCreateRequest.toEntity(archive);
         folderRepository.save(folder);
-        return folder;
+        return new FolderCreateResponse(FolderView.fromEntity(folder));
+    }
+
+    @Transactional
+    public void updateFolderStatus(String author, Long folderId, FolderStatus status) {
+        Folder folder = folderRepository.findById(folderId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 폴더가 존재하지 않습니다!"));
+        if (status == FolderStatus.DELETED) {
+            // 삭제해야할 땐 공개된 폴더가 최소 1개인지 확인
+            if (folderRepository.countByAuthor(author, FolderStatus.ACTIVE) <= 1) {
+                throw new IllegalStateException("폴더는 최소 1개 이상이여야 합니다!");
+            }
+        }
+        folder.updateStatus(status);
     }
 
     @Transactional(readOnly = true)

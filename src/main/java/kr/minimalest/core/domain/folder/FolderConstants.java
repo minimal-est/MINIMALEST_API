@@ -1,4 +1,4 @@
-package kr.minimalest.core.domain.folder.dto;
+package kr.minimalest.core.domain.folder;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,12 +1,11 @@
 package kr.minimalest.core.domain.archive.dto;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import kr.minimalest.core.common.utils.RegexUtils;
 import kr.minimalest.core.domain.archive.Archive;
-import kr.minimalest.core.domain.folder.dto.FolderConstants;
+import kr.minimalest.core.domain.folder.FolderConstants;
 import kr.minimalest.core.domain.member.Member;
 import lombok.Data;
 

@@ -38,11 +38,19 @@ public class Folder {
     @JoinColumn(name = "archive_id")
     private Archive archive;
 
+    @Enumerated(EnumType.STRING)
+    private FolderStatus folderStatus;
+
     @Builder
     public Folder(String name, @Nullable Folder parent, Archive archive) {
         this.name = name;
         this.archive = archive;
+        this.folderStatus = FolderStatus.ACTIVE;
         setParent(parent);
+    }
+
+    public void updateStatus(FolderStatus status) {
+        this.folderStatus = status;
     }
 
     public boolean isLeaf() {

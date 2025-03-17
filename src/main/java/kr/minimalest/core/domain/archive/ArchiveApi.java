@@ -7,6 +7,9 @@ import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateRequest;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateResponse;
 import kr.minimalest.core.domain.folder.FolderService;
+import kr.minimalest.core.domain.folder.FolderStatus;
+import kr.minimalest.core.domain.folder.dto.FolderCreateRequest;
+import kr.minimalest.core.domain.folder.dto.FolderCreateResponse;
 import kr.minimalest.core.domain.folder.dto.FolderView;
 import kr.minimalest.core.domain.post.PostRole;
 import kr.minimalest.core.domain.post.service.PostService;
@@ -22,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -158,6 +162,34 @@ public class ArchiveApi {
     ) {
         Slice<PostPreviewResponse> postPreviewResponses = postService.findAllPostViewInFolder(author, folderId, pageable);
         return ApiResponse.success(postPreviewResponses);
+    }
+
+    @Authenticate
+    @PostMapping("/{author}/folder")
+    public ApiResponse<?> createFolder(
+            @PathVariable String author,
+            @Valid @RequestBody FolderCreateRequest folderCreateRequest
+    ) {
+        try {
+            FolderCreateResponse folderCreateResponse = folderService.create(folderCreateRequest, author);
+            return ApiResponse.success(folderCreateResponse);
+        } catch (IllegalArgumentException ex) {
+            return ApiResponse.error(HttpStatus.CONFLICT, ex.getMessage());
+        }
+    }
+
+    @Authenticate
+    @DeleteMapping("/{author}/folder/{id}")
+    public ApiResponse<?> deleteFolder(
+            @PathVariable String author,
+            @PathVariable Long id
+    ) {
+        try {
+            folderService.updateFolderStatus(author, id, FolderStatus.DELETED);
+            return ApiResponse.success("폴더를 성공적으로 삭제했습니다.");
+        } catch (IllegalStateException ex) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @GetMapping("/{author}/folder/flat")

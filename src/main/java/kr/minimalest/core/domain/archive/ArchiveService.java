@@ -4,8 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateRequest;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
-import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.folder.FolderService;
+import kr.minimalest.core.domain.folder.dto.FolderCreateRequest;
 import kr.minimalest.core.domain.member.Member;
 import kr.minimalest.core.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class ArchiveService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 회원은 존재하지 않습니다!"));
         Archive archive = request.toEntity(member);
         archiveRepository.save(archive);
-        folderService.create(request.getFirstFolderName(), archive);
+        folderService.create(new FolderCreateRequest(request.getFirstFolderName()), archive.getAuthor());
         return new ArchiveCreateResponse(archive.getAuthor());
     }
 
