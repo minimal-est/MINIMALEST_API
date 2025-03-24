@@ -39,8 +39,21 @@ logging:
     org.springframework.web: WARN
     kr.minimalest.core: INFO
 
-jwt:
-  secret-key: ${JWT_SECRET_KEY}
-  access-expiration: 1800000 #ms (1000 * 60 * 30) : 30분
-  refresh-expiration: 604800000 #ms (1000 * 60 * 60 * 24 * 7) : 7일
-  clock-skew-seconds: 120 #s 120초
+
+auth:
+  success:
+    redirect-uri: http://localhost:5173/
+
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    access-expiration: 1800000 #ms (1000 * 60 * 30) : 30분
+    refresh-expiration: 604800000 #ms (1000 * 60 * 60 * 24 * 7) : 7일
+    clock-skew-seconds: 120 #s 120초
+
+  oauth:
+    google:
+      client_id: ${OAUTH_GOOGLE_CLIENT_ID}
+      client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+      redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+      token_uri: https://oauth2.googleapis.com/token
+      resource_uri: https://www.googleapis.com/oauth2/v2/userinfo

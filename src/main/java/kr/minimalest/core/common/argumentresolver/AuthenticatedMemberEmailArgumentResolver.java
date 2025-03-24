@@ -1,7 +1,7 @@
 package kr.minimalest.core.common.argumentresolver;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.minimalest.core.domain.auth.JwtHelper;
+import kr.minimalest.core.domain.auth.JwtTokenHelper;
 import kr.minimalest.core.common.annotation.AuthenticatedMemberEmail;
 import kr.minimalest.core.domain.auth.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class AuthenticatedMemberEmailArgumentResolver implements HandlerMethodAr
 
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private final JwtHelper jwtHelper;
+    private final JwtTokenHelper jwtHelper;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

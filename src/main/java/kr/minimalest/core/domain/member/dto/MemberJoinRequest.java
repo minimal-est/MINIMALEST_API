@@ -1,10 +1,8 @@
 package kr.minimalest.core.domain.member.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import kr.minimalest.core.common.utils.RegexUtils;
+import kr.minimalest.core.domain.auth.AuthType;
 import kr.minimalest.core.domain.member.Member;
 import kr.minimalest.core.domain.member.MemberUtils;
 import kr.minimalest.core.domain.member.UserLevel;
@@ -34,12 +32,16 @@ public class MemberJoinRequest {
 
     private String profileImageUrl;
 
+    @NotNull
+    private AuthType authType;
+
     public static Member toEntity(MemberJoinRequest memberJoinRequest) {
         return Member.builder()
                 .username(memberJoinRequest.getUsername())
                 .encPassword(MemberUtils.encodePassword(memberJoinRequest.getRawPassword()))
                 .email(memberJoinRequest.getEmail())
                 .userLevel(UserLevel.MEMBER)
+                .authType(memberJoinRequest.authType)
                 .build();
     }
 }

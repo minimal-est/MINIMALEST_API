@@ -1,10 +1,12 @@
 package kr.minimalest.core.domain.member;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.minimalest.core.domain.auth.AuthType;
 import kr.minimalest.core.domain.auth.dto.LoginRequest;
 import kr.minimalest.core.domain.member.dto.MemberFindResponse;
 import kr.minimalest.core.domain.member.dto.MemberJoinRequest;
 import kr.minimalest.core.domain.member.dto.MemberJoinResponse;
+import kr.minimalest.core.domain.member.exception.MemberConflictException;
 import kr.minimalest.core.domain.member.exception.MemberValidationException;
 import kr.minimalest.core.domain.profile.Profile;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -22,6 +26,9 @@ public class MemberService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MemberJoinResponse joinMember(MemberJoinRequest memberJoinRequest) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(memberJoinRequest.getEmail());
+        if (optionalMember.isPresent()) throw new MemberConflictException("이미 존재하는 회원입니다!");
+
         Member member = MemberJoinRequest.toEntity(memberJoinRequest);
         Profile profile = new Profile(memberJoinRequest.getProfileImageUrl());
         member.setProfile(profile);
@@ -48,10 +55,21 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateLogin(LoginRequest loginRequest) {
-        boolean validation = memberRepository.existsByEmailAndEncPassword(
-                loginRequest.getEmail(),
-                MemberUtils.encodePassword(loginRequest.getRawPassword())
-        );
+        boolean validation = false;
+
+        if (loginRequest.getAuthType() == AuthType.JWT) {
+            // 순수 로그인 이라면 비밀번호를 확인합니다.
+            validation = memberRepository.existsByEmailAndEncPassword(
+                    loginRequest.getEmail(),
+                    MemberUtils.encodePassword(loginRequest.getRawPassword())
+            );
+        } else {
+            // 다른 방법일 경우, 이메일로 검증합니다.
+            validation = memberRepository.existsByEmailAndAuthType(
+                    loginRequest.getEmail(),
+                    loginRequest.getAuthType()
+            );
+        }
 
         if (!validation) {
             throw new MemberValidationException("유효한 회원이 아닙니다!");

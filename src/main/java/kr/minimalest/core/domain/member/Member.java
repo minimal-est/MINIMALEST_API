@@ -1,6 +1,7 @@
 package kr.minimalest.core.domain.member;
 
 import jakarta.persistence.*;
+import kr.minimalest.core.domain.auth.AuthType;
 import kr.minimalest.core.domain.profile.Profile;
 import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.base.BaseColumn;
@@ -41,17 +42,8 @@ public class Member extends BaseColumn {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
-    public static Member join(
-            String username,
-            String rawPassword,
-            String email
-    ) {
-        return Member.builder()
-                .username(username)
-                .encPassword(MemberUtils.encodePassword(rawPassword))
-                .email(email)
-                .build();
-    }
+    @Enumerated(EnumType.STRING)
+    private AuthType authType;
 
     public void setProfile(Profile profile) {
         this.profile = profile;

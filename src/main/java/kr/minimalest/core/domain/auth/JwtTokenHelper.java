@@ -11,17 +11,20 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Optional;
 
+/**
+ * JWT 정보를 주입받아 토큰 생성과 이메일 추출을 담당합니다.
+ */
 @Slf4j
 @Component
-public class JwtHelper {
+public class JwtTokenHelper {
 
-    @Value("${jwt.access-expiration}")
+    @Value("${auth.jwt.access-expiration}")
     public int ACCESS_EXPIRATION; // Default 30분
 
-    @Value("${jwt.refresh-expiration}")
+    @Value("${auth.jwt.refresh-expiration}")
     public int REFRESH_EXPIRATION; // Default 7일
 
-    @Value("${jwt.secret-key}")
+    @Value("${auth.jwt.secret-key}")
     private String SECRET_CODE;
 
     // JWT 시그니쳐를 위한 키
@@ -67,6 +70,13 @@ public class JwtHelper {
         }
 
         return optionalClaims;
+    }
+
+    // 이메일 추출
+    public String extractEmail(String token) {
+        return extractClaims(token)
+                .map(Claims::getSubject)
+                .orElseThrow(() -> new IllegalArgumentException("토큰에서 Email을 추출할 수 없습니다!"));
     }
 
     private String generateToken(String subject, long expiration) {

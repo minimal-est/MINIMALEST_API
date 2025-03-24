@@ -19,4 +19,10 @@ public class MemberExceptionHandler {
     public ApiResponse<?> handleMemberValidationException(MemberValidationException ex) {
         return ApiResponse.error(HttpStatus.NOT_FOUND, ex.getMessage());
     }
+
+    @ExceptionHandler(MemberConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiResponse<?> handleMemberConflictException(MemberConflictException ex) {
+        return ApiResponse.error(HttpStatus.CONFLICT, ex.getMessage());
+    }
 }
