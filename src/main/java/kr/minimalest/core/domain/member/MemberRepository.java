@@ -1,5 +1,6 @@
 package kr.minimalest.core.domain.member;
 
+import kr.minimalest.core.domain.auth.AuthType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,4 +27,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByUsername(String username);
 
     boolean existsByEmailAndEncPassword(String email, String encPassword);
+
+    boolean existsByEmailAndAuthType(String email, AuthType authType);
 }

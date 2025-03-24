@@ -48,10 +48,21 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateLogin(LoginRequest loginRequest) {
-        boolean validation = memberRepository.existsByEmailAndEncPassword(
-                loginRequest.getEmail(),
-                MemberUtils.encodePassword(loginRequest.getRawPassword())
-        );
+        boolean validation = false;
+
+        if (loginRequest.getAuthType() == AuthType.JWT) {
+            // 순수 로그인 이라면 비밀번호를 확인합니다.
+            validation = memberRepository.existsByEmailAndEncPassword(
+                    loginRequest.getEmail(),
+                    MemberUtils.encodePassword(loginRequest.getRawPassword())
+            );
+        } else {
+            // 다른 방법일 경우, 이메일로 검증합니다.
+            validation = memberRepository.existsByEmailAndAuthType(
+                    loginRequest.getEmail(),
+                    loginRequest.getAuthType()
+            );
+        }
 
         if (!validation) {
             throw new MemberValidationException("유효한 회원이 아닙니다!");

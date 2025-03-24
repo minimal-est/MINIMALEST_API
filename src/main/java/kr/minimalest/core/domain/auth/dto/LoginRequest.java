@@ -2,10 +2,13 @@ package kr.minimalest.core.domain.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import kr.minimalest.core.domain.auth.AuthType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class LoginRequest {
 
     @NotBlank
@@ -14,6 +17,6 @@ public class LoginRequest {
 
     private String rawPassword;
 
-    @NotBlank
+    @NotNull
     private AuthType authType;;
 }
