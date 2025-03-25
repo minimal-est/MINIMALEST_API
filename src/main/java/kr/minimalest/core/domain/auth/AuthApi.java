@@ -81,7 +81,6 @@ public class AuthApi {
                 String accessToken = googleAuthService.retrieveToken(code).getAccessToken();
                 googleProfileInfo = googleAuthService.retrieveProfile(accessToken);
             } catch (Exception ex) {
-                log.error("구글 프로필 획득 실패", ex);
                 response.sendRedirect(redirectUriSb.toString());
                 return;
             }
