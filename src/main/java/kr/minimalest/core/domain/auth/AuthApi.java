@@ -75,8 +75,16 @@ public class AuthApi {
 
         // 구글에 토큰 획득
         if (StringUtils.hasText(code)) {
-            String accessToken = googleAuthService.retrieveToken(code).getAccessToken();
-            GoogleProfileInfo googleProfileInfo = googleAuthService.retrieveProfile(accessToken);
+            GoogleProfileInfo googleProfileInfo;
+
+            try {
+                String accessToken = googleAuthService.retrieveToken(code).getAccessToken();
+                googleProfileInfo = googleAuthService.retrieveProfile(accessToken);
+            } catch (Exception ex) {
+                log.error("구글 프로필 획득 실패");
+                response.sendRedirect(redirectUriSb.toString());
+                return;
+            }
 
             try {
                 LoginSuccessResponse loginSuccessResponse = googleAuthService.loginOrJoin(googleProfileInfo, response);
