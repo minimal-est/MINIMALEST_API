@@ -8,4 +8,6 @@ import lombok.Data;
 public class LoginSuccessResponse {
 
     private String email;
+
+    private boolean isNew;
 }

@@ -6,6 +6,7 @@ import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.auth.dto.GoogleProfileInfo;
 import kr.minimalest.core.domain.auth.dto.LoginRequest;
 import kr.minimalest.core.domain.auth.dto.LoginSuccessResponse;
+import kr.minimalest.core.domain.member.exception.MemberConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,27 +53,42 @@ public class AuthApi {
     }
 
     /**
-     * <p>구글 계정 인증 성공 시, 호출되는 API입니다. 로그인과 회원인증을 모두 처리합니다.</p>
-     * <p>API를 변경하기 위해서는, 구글 OAuth2 클라이언트의 승인된 리다이렉션 URI를 변경해야합니다.</p>
+     * <p>구글 계정 인증 성공 시, 호출되는 API입니다. 로그인과 회원인증을 모두 처리합니다.
+     * API를 변경하기 위해서는, 구글 OAuth2 클라이언트의 승인된 리다이렉션 URI를 변경해야합니다.</p>
+     * <p>성공 - {redirect_uri}?isNew=(true, false) : isNew 값은 사용자가 새로 가입한 회원인지 여부입니다.</p>
+     * <p>거부 - {redirect_uri}?error=access_denied</p>
+     * <P>가입할 수 없는 회원 - {redirect_uri}?error=conflict</P>
      */
     @GetMapping("/oauth/google")
-    public ApiResponse<?> redirectFromGoogleOAuth(
+    public void redirectFromGoogleOAuth(
             @RequestParam(required = false) String code,
             @RequestParam(required = false) String error,
             HttpServletResponse response
     ) throws IOException {
-        if (StringUtils.hasText(error) && error.equals("access_denied")) {
-            return ApiResponse.error(HttpStatus.FORBIDDEN, "구글 계정 인증이 거부되었습니다!");
+
+        StringBuilder redirectUriSb = new StringBuilder(AUTH_SUCCESS_REDIRECT_URI);
+
+        if (StringUtils.hasText(error)) {
+            // 계정 인증 실패 시 error 파라미터 담아서 제공
+            redirectUriSb.append("?error=").append(error);
         }
 
         // 구글에 토큰 획득
         if (StringUtils.hasText(code)) {
             String accessToken = googleAuthService.retrieveToken(code).getAccessToken();
             GoogleProfileInfo googleProfileInfo = googleAuthService.retrieveProfile(accessToken);
-            googleAuthService.loginOrJoin(googleProfileInfo, response);
-            response.sendRedirect(AUTH_SUCCESS_REDIRECT_URI);
+
+            try {
+                LoginSuccessResponse loginSuccessResponse = googleAuthService.loginOrJoin(googleProfileInfo, response);
+                // 클라이언트에게 구글 인증 상태를 제공합니다.
+                // isNew : 새로 가입된 회원인지 여부 (true, false)
+                redirectUriSb.append("?isNew=").append(loginSuccessResponse.isNew());
+            } catch (MemberConflictException ex) {
+                // 이미 기존의 이메일로 가입되어있을 시
+                redirectUriSb.append("?error=conflict");
+            }
         }
 
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 못한 에러가 발생했습니다!");
+        response.sendRedirect(redirectUriSb.toString());
     }
 }

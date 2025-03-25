@@ -42,7 +42,7 @@ logging:
 
 auth:
   success:
-    redirect-uri: http://localhost:5173/
+    redirect-uri: /callback/oauth
 
   jwt:
     secret-key: ${JWT_SECRET_KEY}

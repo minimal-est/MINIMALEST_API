@@ -28,7 +28,7 @@ public class JwtAuthService {
         // Refresh Token 쿠키 저장
         authResponseHandler.setRefreshTokenCookie(refreshToken, response);
 
-        return new LoginSuccessResponse(loginRequest.getEmail());
+        return new LoginSuccessResponse(loginRequest.getEmail(), false);
     }
 
     public void refreshAccessToken(String refreshToken, HttpServletResponse response) {

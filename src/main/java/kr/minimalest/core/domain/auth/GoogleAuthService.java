@@ -43,12 +43,14 @@ public class GoogleAuthService {
 
     public LoginSuccessResponse loginOrJoin(GoogleProfileInfo googleProfileInfo, HttpServletResponse response) {
         LoginRequest loginRequest = new LoginRequest(googleProfileInfo.getEmail(), null, AuthType.GOOGLE);
+        boolean isNew = false;
 
         try {
             memberService.validateLogin(loginRequest);
         } catch (MemberValidationException ex) {
             // 존재하지 않는 계정이므로, 회원가입 진행
             join(googleProfileInfo);
+            isNew = true;
         }
 
         // 토큰 발급
@@ -59,7 +61,7 @@ public class GoogleAuthService {
         authResponseHandler.setAccessTokenHeader(accessToken, response);
         authResponseHandler.setRefreshTokenCookie(refreshToken, response);
 
-        return new LoginSuccessResponse(googleProfileInfo.getEmail());
+        return new LoginSuccessResponse(googleProfileInfo.getEmail(), isNew);
     }
 
     public void join(GoogleProfileInfo googleProfileInfo) {
