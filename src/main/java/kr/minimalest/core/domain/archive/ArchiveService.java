@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateRequest;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
+import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponses;
 import kr.minimalest.core.domain.folder.FolderService;
 import kr.minimalest.core.domain.folder.dto.FolderCreateRequest;
 import kr.minimalest.core.domain.member.Member;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -35,10 +37,19 @@ public class ArchiveService {
     }
 
     @Transactional(readOnly = true)
-    public ArchiveInfoResponse validateArchive(String author, String email) {
+    public ArchiveInfoResponses findArchiveInfos(String email) {
+        List<Archive> archives = archiveRepository.findAllByEmail(email);
+        List<ArchiveInfoResponse> archiveInfoResponses = archives.stream()
+                .map(ArchiveInfoResponse::fromEntity)
+                .toList();
+        return new ArchiveInfoResponses(archiveInfoResponses);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateArchive(String author, String email) {
         Optional<Archive> optionalArchive = archiveRepository.findByAuthorAndMemberEmail(author, email);
         Archive archive = optionalArchive.orElseThrow(() -> new IllegalArgumentException("아카이브의 계정이 올바르지 않습니다!"));
-        return ArchiveInfoResponse.fromEntity(archive);
+        ArchiveInfoResponse.fromEntity(archive);
     }
 
     @Transactional(readOnly = true)

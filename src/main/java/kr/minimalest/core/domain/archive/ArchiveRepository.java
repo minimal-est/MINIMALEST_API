@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,4 +27,11 @@ public interface ArchiveRepository extends JpaRepository<Archive, Long> {
         WHERE a.author = :author AND m.email = :email
     """)
     Optional<Archive> findByAuthorAndMemberEmail(String author, String email);
+
+    @Query("""
+        SELECT a
+        FROM Archive AS a
+        WHERE a.member.email = :email
+    """)
+    List<Archive> findAllByEmail(String email);
 }

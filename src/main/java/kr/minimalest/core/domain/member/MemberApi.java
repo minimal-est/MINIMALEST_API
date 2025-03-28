@@ -1,7 +1,10 @@
 package kr.minimalest.core.domain.member;
 
 import jakarta.validation.Valid;
+import kr.minimalest.core.common.annotation.Authenticate;
 import kr.minimalest.core.common.dto.ApiResponse;
+import kr.minimalest.core.domain.archive.ArchiveService;
+import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponses;
 import kr.minimalest.core.domain.member.dto.MemberFindResponse;
 import kr.minimalest.core.domain.member.dto.MemberJoinRequest;
 import kr.minimalest.core.domain.member.dto.MemberJoinResponse;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberApi {
 
     private final MemberService memberService;
+    private final ArchiveService archiveService;
 
     @PostMapping
     public ApiResponse<?> joinMember(
@@ -40,5 +44,14 @@ public class MemberApi {
     ) {
         MemberFindResponse memberFindResponse = memberService.findAndValidate(email);
         return ApiResponse.success(memberFindResponse);
+    }
+
+    @Authenticate
+    @GetMapping("/{email}/archive")
+    public ApiResponse<?> findArchives(
+            @PathVariable String email
+    ) {
+        ArchiveInfoResponses archiveInfoResponses = archiveService.findArchiveInfos(email);
+        return ApiResponse.success(archiveInfoResponses);
     }
 }
