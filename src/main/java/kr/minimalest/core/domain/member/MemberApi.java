@@ -34,11 +34,11 @@ public class MemberApi {
         return ApiResponse.success(memberFindResponse);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/{email}")
     public ApiResponse<?> findMember(
-            @PathVariable String username
+            @PathVariable String email
     ) {
-        MemberFindResponse memberFindResponse = memberService.findAndValidate(username);
+        MemberFindResponse memberFindResponse = memberService.findAndValidate(email);
         return ApiResponse.success(memberFindResponse);
     }
 }

@@ -47,8 +47,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberFindResponse findAndValidate(String username) {
-        Member member = memberRepository.findByUsername(username)
+    public MemberFindResponse findAndValidate(String email) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("해당 회원을 찾을 수 없습니다!"));
         return MemberFindResponse.fromEntity(member);
     }
