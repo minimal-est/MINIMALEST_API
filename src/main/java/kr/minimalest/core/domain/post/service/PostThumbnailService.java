@@ -12,6 +12,7 @@ import org.commonmark.node.Image;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 @Slf4j
@@ -46,10 +47,10 @@ public class PostThumbnailService {
         String pureExt = FileUtils.extractPureExt(filename);
         String contentType = FileUtils.toImageContentType(pureExt);
 
-        // 선정한 이미지 압축
-        OutputStream thumbnailOutputStream = thumbnailGenerator.create(thumbnailUrl, pureExt);
-
-        // 썸네일 저장
-        return fileService.uploadAndSave(post, thumbnailOutputStream, filename, contentType);
+        try (OutputStream thumbnailOutputStream = thumbnailGenerator.create(thumbnailUrl, pureExt)){
+            return fileService.uploadAndSave(post, thumbnailOutputStream, filename, contentType);
+        } catch (IOException ex) {
+            throw new RuntimeException("썸네일 생성에 실패했습니다!", ex);
+        }
     }
 }
