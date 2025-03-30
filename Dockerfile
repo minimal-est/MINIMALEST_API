@@ -32,4 +32,4 @@ ENV OAUTH_GOOGLE_REDIRECT_URI=$OAUTH_GOOGLE_REDIRECT_URI
 
 COPY build/libs/*.jar app.jar
 
-ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
