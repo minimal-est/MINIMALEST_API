@@ -5,11 +5,15 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
+@Primary
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MarkdownContentHelper implements ContentHelper {
 
