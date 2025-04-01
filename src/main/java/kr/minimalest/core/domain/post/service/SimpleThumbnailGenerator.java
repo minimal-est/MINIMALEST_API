@@ -16,9 +16,8 @@ import static kr.minimalest.core.domain.post.utils.PostConstants.MAX_THUMBNAIL_W
 public class SimpleThumbnailGenerator implements ThumbnailGenerator {
 
     @Override
-    public OutputStream create(String imageUrl, String pureExt) {
+    public void create(String imageUrl, String pureExt, OutputStream outputStream) {
         try (InputStream inputStream = new URL(imageUrl).openStream()) {
-            OutputStream outputStream = new ByteArrayOutputStream();
 
             Thumbnails.of(inputStream)
                     .size(MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT)
@@ -26,7 +25,6 @@ public class SimpleThumbnailGenerator implements ThumbnailGenerator {
                     .outputFormat(pureExt)
                     .toOutputStream(outputStream);
 
-            return outputStream;
         } catch (IOException e) {
             throw new RuntimeException("썸네일 변환에 실패했습니다!", e);
         }
