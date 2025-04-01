@@ -4,5 +4,5 @@ import java.io.OutputStream;
 
 public interface ThumbnailGenerator {
 
-    OutputStream create(String imageUrl, String pureExt);
+    void create(String imageUrl, String pureExt, OutputStream outputStream);
 }

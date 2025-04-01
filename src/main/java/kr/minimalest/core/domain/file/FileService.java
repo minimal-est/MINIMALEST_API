@@ -28,9 +28,9 @@ public class FileService {
     }
 
     // 파일 업로드 및 저장 메서드 (OutputStream)
-    public FileResponse uploadAndSave(@Nullable Post post, OutputStream outputStream, String filename, String contentType) {
+    public FileResponse uploadAndSave(@Nullable Post post, InputStream inputStream, String filename, String contentType) {
         // 파일 스토리지에 업로드
-        String key = fileUploader.uploadFile(toInputStream(outputStream), filename, contentType);
+        String key = fileUploader.uploadFile(inputStream, filename, contentType);
 
         FileStorageType storageType = fileUploader.getStorageType();
         String virtualUrl = virtualUrlResolver(key, VIRTUAL_REQUEST);
