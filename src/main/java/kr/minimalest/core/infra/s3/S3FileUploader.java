@@ -1,4 +1,4 @@
-package kr.minimalest.core.domain.file.s3;
+package kr.minimalest.core.infra.s3;
 
 import io.awspring.cloud.s3.S3Operations;
 import io.awspring.cloud.s3.S3Resource;
