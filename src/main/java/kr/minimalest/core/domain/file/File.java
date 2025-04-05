@@ -22,11 +22,11 @@ public class File extends BaseColumn {
     private String filename;
 
     // 클라이언트에서 파일을 요청할 때 사용하는 UUID 값으로, 고유합니다.
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String storageKey;
 
     // 클라이언트에 제공할 파일 주소값입니다.
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String virtualUrl;
 
     // 저장소 타입을 나타냅니다.
