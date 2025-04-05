@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("썸네일 생성 람다 클래스")
+@DisplayName("썸네일 생성 람다 테스트")
 class ThumbnailLambdaTest {
 
     @Mock
@@ -27,9 +27,9 @@ class ThumbnailLambdaTest {
     @InjectMocks
     private ThumbnailLambda thumbnailLambda;
 
-    private final String TEST_IMAGE_KEY = "image/sample.png";
-    private final String TEST_THUMBNAIL_KEY = "thumbnail/image/sample.png";
-    private final String MOCK_TRIGGER_URL = "https://mock-trigger-url.good";
+    private static final String TEST_IMAGE_KEY = "image/sample.png";
+    private static final String TEST_THUMBNAIL_KEY = "thumbnail/image/sample.png";
+    private static final String MOCK_TRIGGER_URL = "https://mock-trigger-url.good";
 
     @BeforeEach
     void setUp() throws Exception {
