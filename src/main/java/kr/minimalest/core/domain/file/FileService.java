@@ -3,6 +3,7 @@ package kr.minimalest.core.domain.file;
 import kr.minimalest.core.domain.file.dto.FileResponse;
 import kr.minimalest.core.domain.post.Post;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
@@ -27,18 +29,11 @@ public class FileService {
         return fileUploader.findResource(key);
     }
 
-    // 파일 업로드 및 저장 메서드 (OutputStream)
-    public FileResponse uploadAndSave(@Nullable Post post, InputStream inputStream, String filename, String contentType) {
-        // 파일 스토리지에 업로드
-        String key = fileUploader.uploadFile(inputStream, filename, contentType);
-
+    public FileResponse save(@Nullable Post post, String key) {
         FileStorageType storageType = fileUploader.getStorageType();
         String virtualUrl = virtualUrlResolver(key, VIRTUAL_REQUEST);
-
-        // 파일 메타데이터 DB에 저장
-        fileStorageService.saveMetadata(filename, key, virtualUrl, storageType, post);
-
-        return new FileResponse(filename, virtualUrl, key);
+        fileStorageService.saveMetadata(key, key, virtualUrl, storageType, post);
+        return new FileResponse(key, virtualUrl, key);
     }
 
     // 파일 업로드 및 저장 메서드 (Multipart)
@@ -57,13 +52,5 @@ public class FileService {
 
     private static String virtualUrlResolver(String key, String virtualUrl) {
         return virtualUrl + "?key=" + key;
-    }
-
-    private static InputStream toInputStream(OutputStream outputStream) {
-        ByteArrayOutputStream byteArrayOutputStream = (ByteArrayOutputStream) outputStream;
-
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-        return new ByteArrayInputStream(byteArray);
     }
 }
