@@ -40,11 +40,6 @@ public class PostImageService {
         }
     }
 
-    // 본문에서 첫 이미지(마크다운)를 추출합니다.
-    public static Optional<Image> extractFirstImage(List<Image> images) {
-        return images.isEmpty() ? Optional.empty() : Optional.of(images.get(0));
-    }
-
     private void saveExternalImage(String contentImageUrl, Post post) {
         String pureExt = FileUtils.extractExt(contentImageUrl);
         String contentType = toImageContentType(pureExt);
