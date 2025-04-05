@@ -16,12 +16,18 @@ public final class FileUtils {
 
     // http://example.com/file?key=image/my-key.png&position=abc.. -> image/my-key.png
     public static String extractKeyParameter(String fileUrl) {
-        int keyStartIndex = fileUrl.indexOf("key=") + 4;
-        int keyEndIndex = fileUrl.indexOf('&', keyStartIndex);
+        if (fileUrl.contains("key=")) {
+            int keyStartIndex = fileUrl.indexOf("key=") + 4;
+            int keyEndIndex = fileUrl.indexOf('&', keyStartIndex);
 
-        return keyEndIndex == -1 ?
-                fileUrl.substring(keyStartIndex) :
-                fileUrl.substring(keyStartIndex, keyEndIndex);
+            return keyEndIndex == -1 ?
+                    fileUrl.substring(keyStartIndex) :
+                    fileUrl.substring(keyStartIndex, keyEndIndex);
+        } else {
+            // http://, https:// 이후의 /를 찾기
+            int domainEndIndex = fileUrl.indexOf("/", 8);
+            return domainEndIndex == -1 ? "" : fileUrl.substring(domainEndIndex + 1);
+        }
     }
 
     // myImage.png -> image/{uuid}.png
