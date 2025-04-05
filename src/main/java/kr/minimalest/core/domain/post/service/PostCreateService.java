@@ -68,8 +68,11 @@ public class PostCreateService implements PostCreator {
             // 썸네일 업데이트
             if (StringUtils.hasText(request.getThumbnailUrl())) {
                 thumbnailService.generateThumbnailUrl(post, request.getThumbnailUrl());
+            } else {
+                post.setThumbnailUrl(null);
             }
         }
+
         post.updateTitle(request.getTitle());
         post.updateContent(request.getContent());
         post.updateFolder(folder);

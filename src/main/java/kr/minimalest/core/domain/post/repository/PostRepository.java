@@ -47,6 +47,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
                 p.folder.id,
                 p.folder.name,
                 p.postRole,
+                p.thumbnailUrl,
                 p.createdAt,
                 p.lastModifiedAt
             )
@@ -91,6 +92,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
                 p.folder.id,
                 p.folder.name,
                 p.postRole,
+                p.thumbnailUrl,
                 p.createdAt,
                 p.lastModifiedAt
             )

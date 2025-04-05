@@ -22,6 +22,7 @@ public class PostViewResponse {
     private String content;
     private Long folderId;
     private String folderName;
+    private String thumbnailUrl;
     private PostRole postRole;
 
     @Setter
@@ -44,6 +45,7 @@ public class PostViewResponse {
             Long folderId,
             String folderName,
             PostRole postRole,
+            String thumbnailUrl,
             LocalDateTime createdAt,
             LocalDateTime lastModifiedAt) {
         this.author = author;
@@ -53,6 +55,7 @@ public class PostViewResponse {
         this.folderId = folderId;
         this.folderName = folderName;
         this.postRole = postRole;
+        this.thumbnailUrl = thumbnailUrl;
         this.isModified = Post.isModified(createdAt, lastModifiedAt);
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
@@ -68,6 +71,7 @@ public class PostViewResponse {
                 .folderName(post.getFolder().getName())
                 .postRole(post.getPostRole())
                 .createdAt(post.getCreatedAt())
+                .thumbnailUrl(post.getThumbnailUrl())
                 .lastModifiedAt(post.getLastModifiedAt())
                 .isModified(post.isModified())
                 .build();
