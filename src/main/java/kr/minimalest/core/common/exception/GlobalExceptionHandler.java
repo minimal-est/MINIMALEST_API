@@ -29,6 +29,7 @@ public class GlobalExceptionHandler {
 
         String message = String.format("%s %s", ex.getMessage(), ex.getClass());
 
+        log.error(message, ex);
         return ApiResponse.error(httpStatus, message);
     }
 
