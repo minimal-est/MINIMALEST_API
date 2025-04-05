@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ApiResponse<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         // Spring JPA DB 무결성 제약조건 위반 시
-        return ApiResponse.error(HttpStatus.CONFLICT, ex.getMessage());
+        return ApiResponse.error(HttpStatus.CONFLICT, "이미 존재하는 데이터입니다.");
     }
 }
 
