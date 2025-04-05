@@ -5,18 +5,20 @@ import kr.minimalest.core.domain.archive.Archive;
 import kr.minimalest.core.domain.archive.ArchiveRepository;
 import kr.minimalest.core.domain.folder.Folder;
 import kr.minimalest.core.domain.folder.FolderRepository;
-import kr.minimalest.core.domain.post.*;
+import kr.minimalest.core.domain.post.Post;
 import kr.minimalest.core.domain.post.dto.PostCreateRequest;
 import kr.minimalest.core.domain.post.dto.PostCreateResponse;
 import kr.minimalest.core.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.commonmark.node.Image;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostCreateService implements PostCreator {
@@ -25,7 +27,7 @@ public class PostCreateService implements PostCreator {
     private final ArchiveRepository archiveRepository;
     private final FolderRepository folderRepository;
     private final PostImageService postImageService;
-    private final PostThumbnailService postThumbnailService;
+    private final ThumbnailService thumbnailService;
     private final Extractor extractor;
 
     @Override
@@ -39,23 +41,17 @@ public class PostCreateService implements PostCreator {
         // 아카이브의 Post Sequence 더하기
         long nextSequence = postRepository.findMaxSequenceByArchive(author) + 1;
 
-        // 이미지 추출 후 썸네일 선정
-        List<Image> images = extractor.extract(request.getContent(), Image.class);
-        Optional<Image> optionalImage = PostImageService.extractFirstImage(images);
-        boolean hasThumbnail = optionalImage.isPresent();
-
-        Post post = request.toEntity(folder, archive, nextSequence, hasThumbnail, null);
-
-        // 썸네일 저장 및 업로드 후 URL 생성
-        String thumbnailUrl = optionalImage.map(image -> postThumbnailService.createThumbnailUrl(image, post)).orElse(null);
-
-        // 포스트에 썸네일 URL 부착
-        post.setThumbnailUrl(thumbnailUrl);
-
-        // 포스트 저장
+        // 포스트 생성 및 저장
+        Post post = request.toEntity(folder, archive, nextSequence, null);
         postRepository.save(post);
 
+        // 썸네일 생성 및 부착
+        if (StringUtils.hasText(request.getThumbnailUrl())) {
+            thumbnailService.generateThumbnailUrl(post, request.getThumbnailUrl());
+        }
+
         // 내부 이미지를 업로드 및 포스트에 부착
+        List<Image> images = extractor.extract(request.getContent(), Image.class);
         postImageService.processSaveImages(images, post);
 
         return new PostCreateResponse(author, nextSequence);
@@ -67,17 +63,20 @@ public class PostCreateService implements PostCreator {
         Post post = findPost(author, sequence);
         Folder folder = findFolder(request.getFolderId());
 
-        List<Image> images = extractor.extract(request.getContent(), Image.class);
-        Optional<Image> optionalImage = PostImageService.extractFirstImage(images);
-
-        // 썸네일 저장 및 업로드 후 URL 생성
-        String thumbnailUrl = optionalImage.map(image -> postThumbnailService.createThumbnailUrl(image, post)).orElse(null);
-
-        // 더티 체킹 업데이트
-        post.updateThumbnailUrl(thumbnailUrl);
+        // 변경사항 수정
+        if (!request.getThumbnailUrl().equals(post.getThumbnailUrl())) {
+            // 썸네일 업데이트
+            if (StringUtils.hasText(request.getThumbnailUrl())) {
+                thumbnailService.generateThumbnailUrl(post, request.getThumbnailUrl());
+            }
+        }
         post.updateTitle(request.getTitle());
         post.updateContent(request.getContent());
         post.updateFolder(folder);
+
+        // 내부 이미지를 업로드 및 포스트에 부착
+        List<Image> images = extractor.extract(request.getContent(), Image.class);
+        postImageService.processSaveImages(images, post);
 
         return new PostCreateResponse(author, sequence);
     }
