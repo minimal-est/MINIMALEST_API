@@ -3,7 +3,10 @@ package kr.minimalest.core.domain.archive;
 import jakarta.persistence.*;
 import kr.minimalest.core.domain.base.BaseColumn;
 import kr.minimalest.core.domain.member.Member;
+import kr.minimalest.core.domain.style.entity.Style;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,4 +34,7 @@ public class Archive extends BaseColumn {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "archive")
+    private List<Style> styles;
 }
