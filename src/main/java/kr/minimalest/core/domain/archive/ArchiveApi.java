@@ -7,6 +7,8 @@ import kr.minimalest.core.common.dto.ApiResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateRequest;
 import kr.minimalest.core.domain.archive.dto.ArchiveCreateResponse;
 import kr.minimalest.core.domain.archive.dto.ArchiveInfoResponse;
+import kr.minimalest.core.domain.style.dto.StyleRequest;
+import kr.minimalest.core.domain.style.dto.StyleResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +37,15 @@ public class ArchiveApi {
     ) {
         ArchiveInfoResponse archiveInfoResponse = archiveService.findArchiveInfo(author);
         return ApiResponse.success(archiveInfoResponse);
+    }
+
+    @Authenticate
+    @PutMapping("/{author}/style")
+    public ApiResponse<?> putStyle(
+            @PathVariable String author,
+            @Valid @RequestBody StyleRequest styleRequest
+    ) {
+        StyleResponse styleResponse = archiveService.putStyle(author, styleRequest);
+        return ApiResponse.success(styleResponse);
     }
 }
