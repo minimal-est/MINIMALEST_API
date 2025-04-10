@@ -41,6 +41,7 @@ logging:
     root: INFO
     org.springframework: WARN
     org.springframework.web: WARN
+    org.hibernate: ERROR
     kr.minimalest.core: INFO
 
 
