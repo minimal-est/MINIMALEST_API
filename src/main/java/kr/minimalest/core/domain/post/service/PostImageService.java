@@ -2,7 +2,7 @@ package kr.minimalest.core.domain.post.service;
 
 import kr.minimalest.core.domain.file.File;
 import kr.minimalest.core.domain.file.FileRepository;
-import kr.minimalest.core.domain.file.FileStorageService;
+import kr.minimalest.core.domain.file.metadata.FileMetadataSaver;
 import kr.minimalest.core.domain.file.FileUtils;
 import kr.minimalest.core.domain.post.Post;
 import lombok.RequiredArgsConstructor;
@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PostImageService {
 
-    private final FileStorageService fileStorageService;
+    private final FileMetadataSaver fileMetadataSaver;
     private final FileRepository fileRepository;
 
     @Transactional(readOnly = true)
@@ -45,7 +44,7 @@ public class PostImageService {
         String contentType = toImageContentType(pureExt);
         String type = FileUtils.extractType(contentType);
         String key = FileUtils.keyResolver(type, pureExt);
-        fileStorageService.saveMetadataFromExternal(key, contentImageUrl, post);
+        fileMetadataSaver.saveFileMetadataFromExternalReference(key, contentImageUrl, post);
     }
 
     private static String toImageContentType(String pureExt) {

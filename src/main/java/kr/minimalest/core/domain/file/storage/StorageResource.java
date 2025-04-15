@@ -1,4 +1,4 @@
-package kr.minimalest.core.domain.file;
+package kr.minimalest.core.domain.file.storage;
 
 import java.io.InputStream;
 

@@ -32,7 +32,7 @@ public class File extends BaseColumn {
     // 저장소 타입을 나타냅니다.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FileStorageType fileStorageType;
+    private StorageType storageType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = true)

@@ -1,5 +1,6 @@
 package kr.minimalest.core.domain.file;
 
+import kr.minimalest.core.domain.file.storage.StorageResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class FileResourceApi {
             @RequestParam("key") String key
     ) {
         // 파일 리소스를 불러옵니다.
-        StorageResource resource = fileService.findResource(key);
+        StorageResource resource = fileService.findStorageResource(key);
 
         return ResponseEntity.ok()
                 .header("Content-Type", resource.getContentType())

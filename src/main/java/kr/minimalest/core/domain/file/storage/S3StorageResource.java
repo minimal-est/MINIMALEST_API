@@ -1,12 +1,14 @@
-package kr.minimalest.core.infra.s3;
+package kr.minimalest.core.domain.file.storage;
 
 import io.awspring.cloud.s3.S3Resource;
-import kr.minimalest.core.domain.file.StorageResource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 @RequiredArgsConstructor
 public class S3StorageResource implements StorageResource {
 
@@ -17,7 +19,8 @@ public class S3StorageResource implements StorageResource {
         try {
             return s3Resource.getInputStream();
         } catch (IOException e) {
-            throw new IllegalStateException("S3 리소스의 InputStream을 가져오는 데 실패했습니다!");
+            log.error("S3에서 InputStream을 얻는 데 실패했습니다! location: {}", s3Resource.getLocation());
+            throw new IllegalStateException("S3 리소스의 InputStream을 가져오는 데 실패했습니다!", e);
         }
     }
 
