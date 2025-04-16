@@ -4,11 +4,13 @@ import kr.minimalest.core.domain.file.File;
 import kr.minimalest.core.domain.file.StorageType;
 import kr.minimalest.core.domain.post.Post;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileMetadata {
     private String filename;
     private String storageKey;
