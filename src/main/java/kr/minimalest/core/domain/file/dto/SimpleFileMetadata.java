@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FileResponse {
+public class SimpleFileMetadata {
 
     private String filename;
     private String virtualUrl;

@@ -1,6 +1,6 @@
 package kr.minimalest.core.domain.file;
 
-import kr.minimalest.core.domain.file.dto.FileResponse;
+import kr.minimalest.core.domain.file.dto.SimpleFileMetadata;
 import kr.minimalest.core.domain.file.metadata.FileMetadata;
 import kr.minimalest.core.domain.file.metadata.FileMetadataSaver;
 import kr.minimalest.core.domain.file.storage.MultipartUploadFile;
@@ -27,18 +27,18 @@ public class FileService {
         return storageResourceFinder.find(key);
     }
 
-    public FileResponse save(Post post, String key) {
+    public SimpleFileMetadata save(Post post, String key) {
         return saveFileMetadataAndGetFileResponse(key, key, post);
     }
 
     // 파일 업로드 및 저장 메서드 (Multipart)
-    public FileResponse uploadAndSave(Post post, MultipartFile multipartFile) {
+    public SimpleFileMetadata uploadAndSave(Post post, MultipartFile multipartFile) {
         // 파일 스토리지에 업로드
         String key = storageResourceUploader.uploadAndGetKey(new MultipartUploadFile(multipartFile));
         return saveFileMetadataAndGetFileResponse(multipartFile.getOriginalFilename(), key, post);
     }
 
-    private FileResponse saveFileMetadataAndGetFileResponse(String filename, String key, Post post) {
+    private SimpleFileMetadata saveFileMetadataAndGetFileResponse(String filename, String key, Post post) {
         // 가상 주소 및 저장소 타입 얻기
         String virtualUrl = fileVirtualUrlResolver.resolve(key);
         StorageType storageType = storageResourceUploader.getStorageType();
@@ -47,6 +47,6 @@ public class FileService {
         FileMetadata fileMetadata = FileMetadata.create(filename, key, virtualUrl, storageType, post);
         fileMetadataSaver.saveFileMetadata(fileMetadata);
 
-        return new FileResponse(filename, virtualUrl, key);
+        return new SimpleFileMetadata(filename, virtualUrl, key);
     }
 }
