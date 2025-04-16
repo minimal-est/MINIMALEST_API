@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class S3StorageResourceFinder implements StorageResourceFinder {
 
+    // 'config.S3Config' 에서 버킷명을 주입받습니다.
     private final String bucketName;
     private final S3Operations s3Operations;
 
