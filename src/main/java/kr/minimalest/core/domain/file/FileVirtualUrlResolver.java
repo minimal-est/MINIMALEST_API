@@ -4,10 +4,10 @@ import org.springframework.util.StringUtils;
 
 /**
  * Spring Bean으로 등록되는 URL Resolver.
+ * @see kr.minimalest.core.config.FileVirtualUrlConfig
  */
 public class FileVirtualUrlResolver {
 
-    // config.FileVirtualUrlConfig 에서 주입되는 값입니다.
     private final String virtualRequestUrl;
 
     public FileVirtualUrlResolver(String virtualRequestUrl) {
