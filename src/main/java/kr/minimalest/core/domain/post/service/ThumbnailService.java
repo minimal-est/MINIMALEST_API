@@ -30,7 +30,7 @@ public class ThumbnailService {
 
             String thumbnailUrl = imageUrlBuilder.build(thumbnailKey);
 
-            post.updateThumbnailUrl(thumbnailUrl);
+            post.updateThumbnail(thumbnailUrl);
 
             return thumbnailUrl;
         } catch (Exception ex) {

@@ -67,7 +67,11 @@ public class Post extends BaseColumn {
         this.folder = folder;
     }
 
-    public void updateThumbnailUrl(String thumbnailUrl) {
+    public void removeThumbnail() {
+        updateThumbnail(null);
+    }
+
+    public void updateThumbnail(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
         this.hasThumbnail = StringUtils.hasText(thumbnailUrl);
     }

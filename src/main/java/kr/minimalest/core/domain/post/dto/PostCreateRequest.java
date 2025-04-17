@@ -33,6 +33,21 @@ public class PostCreateRequest {
                 .archive(archive)
                 .folder(folder)
                 .thumbnailUrl(thumbnailUrl)
+                .hasThumbnail(true)
+                .postStatus(PostStatus.PUBLISHED)
+                .postRole(PostRole.NONE)
+                .build();
+    }
+
+    public Post toEntity(Folder folder, Archive archive, long sequence) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .sequence(sequence)
+                .archive(archive)
+                .folder(folder)
+                .thumbnailUrl(null)
+                .hasThumbnail(false)
                 .postStatus(PostStatus.PUBLISHED)
                 .postRole(PostRole.NONE)
                 .build();

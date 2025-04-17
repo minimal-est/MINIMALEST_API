@@ -56,7 +56,7 @@ class ThumbnailServiceTest {
         verify(thumbnailLambda).generateThumbnail(imageKey);
         verify(fileService).save(post, generatedThumbnailKey);
         verify(imageUrlBuilder).build(generatedThumbnailKey);
-        verify(post).updateThumbnailUrl(thumbnailUrl);
+        verify(post).updateThumbnail(thumbnailUrl);
     }
 
     @Test
