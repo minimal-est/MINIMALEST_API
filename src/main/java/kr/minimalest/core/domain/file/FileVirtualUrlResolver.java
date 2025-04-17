@@ -1,18 +1,22 @@
 package kr.minimalest.core.domain.file;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-@Component
+/**
+ * Spring Bean으로 등록되는 URL Resolver.
+ */
 public class FileVirtualUrlResolver {
 
-    @Value("${file.proxy.url}")
-    private String VIRTUAL_REQUEST;
+    // config.FileVirtualUrlConfig 에서 주입되는 값입니다.
+    private final String virtualRequestUrl;
+
+    public FileVirtualUrlResolver(String virtualRequestUrl) {
+        this.virtualRequestUrl = virtualRequestUrl;
+    }
 
     public String resolve(String key) {
         hasKey(key);
-        return VIRTUAL_REQUEST + "?key=" + key;
+        return virtualRequestUrl + "?key=" + key;
     }
 
     private static void hasKey(String key) {
