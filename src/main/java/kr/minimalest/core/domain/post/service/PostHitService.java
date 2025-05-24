@@ -16,7 +16,7 @@ public class PostHitService {
 
     private final PostHitCounter postHitCounter;
     private final PostHitRepository postHitRepository;
-    private final IpChecker<PostViewKey> ipChecker;
+    private final IpManager<PostViewKey> ipManager;
 
     @Transactional
     public void createPostHit(PostViewKey postViewKey) {
@@ -33,7 +33,7 @@ public class PostHitService {
     }
 
     public void incrementHitCount(PostViewKey postViewKey, String clientIp) {
-        if (ipChecker.addIp(postViewKey, clientIp)) {
+        if (ipManager.addIp(postViewKey, clientIp)) {
             postHitCounter.incrementHitCount(postViewKey);
         }
     }
@@ -43,6 +43,6 @@ public class PostHitService {
     }
 
     public void clearIpChecker() {
-        ipChecker.clear();
+        ipManager.clear();
     }
 }
