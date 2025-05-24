@@ -1,19 +1,20 @@
 package kr.minimalest.core.domain.post.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class IpChecker<T> {
+@RequiredArgsConstructor
+public class IpManager<T> {
 
-    private final Map<T, Set<String>> ipSetWithPost = new ConcurrentHashMap<>();
+    private final IpMappingStorageProvider<T> ipStorage;
 
     public boolean addIp(T key, String clientIp) {
-        ipSetWithPost.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet());
-        Set<String> ipSet = ipSetWithPost.get(key);
+        ipStorage.getStorage().computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet());
+        Set<String> ipSet = ipStorage.getStorage().get(key);
 
         if (!ipSet.contains(clientIp)) {
             ipSet.add(clientIp);
@@ -24,6 +25,6 @@ public class IpChecker<T> {
     }
 
     public void clear() {
-        ipSetWithPost.clear();
+        ipStorage.getStorage().clear();
     }
 }

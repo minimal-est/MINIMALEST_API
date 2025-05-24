@@ -23,11 +23,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostCreateService implements PostCreator {
 
-    private final ArchiveRepository archiveRepository;
-    private final FolderRepository folderRepository;
     private final PostRepository postRepository;
     private final PostImageService postImageService;
+    private final ArchiveRepository archiveRepository;
     private final ThumbnailService thumbnailService;
+    private final FolderRepository folderRepository;
     private final Extractor extractor;
 
     @Override
