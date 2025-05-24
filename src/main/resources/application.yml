@@ -10,3 +10,7 @@ file:
 
 springdoc:
   paths-to-match: /api/**
+
+server:
+  http2:
+    enabled: true
