@@ -35,6 +35,11 @@ spring:
 server:
   tomcat:
     max-swallow-size: 10MB
+  ssl:
+    key-store: ${SERVER_SSL_KEY_STORE}
+    key-alias: ${SERVER_SSL_KEY_ALIAS}
+    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
 
 logging:
   level:
