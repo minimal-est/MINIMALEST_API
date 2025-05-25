@@ -35,6 +35,11 @@ spring:
 server:
   tomcat:
     max-swallow-size: 10MB
+  ssl:
+    key-store: ${SERVER_SSL_KEY_STORE}
+    key-alias: ${SERVER_SSL_KEY_ALIAS}
+    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
 
 logging:
   level:
@@ -62,7 +67,6 @@ auth:
       redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
       token_uri: https://oauth2.googleapis.com/token
       resource_uri: https://www.googleapis.com/oauth2/v2/userinfo
-
 aws:
   lambda:
     thumbnail-generate-url: ${AWS_LAMBDA_THUMBNAIL_GENERATE_TRIGGER_URL}
