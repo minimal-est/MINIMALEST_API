@@ -16,3 +16,4 @@ server:
     enabled: true
   ssl:
     enabled: true
+    bundle: jks.server
