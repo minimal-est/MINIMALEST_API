@@ -42,3 +42,6 @@ application-dev.properties
 
 ### config env ###
 .env
+
+### ssl keystore ###
+*.p12
