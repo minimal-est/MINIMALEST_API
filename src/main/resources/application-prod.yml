@@ -40,6 +40,9 @@ server:
     key-alias: ${SERVER_SSL_KEY_ALIAS}
     key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
     key-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
+    trust-store: ${SERVER_SSL_KEY_STORE}
+    trust-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
+    trust-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
 
 logging:
   level:
