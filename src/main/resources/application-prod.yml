@@ -36,13 +36,22 @@ server:
   tomcat:
     max-swallow-size: 10MB
   ssl:
-    key-store: ${SERVER_SSL_KEY_STORE}
-    key-alias: ${SERVER_SSL_KEY_ALIAS}
-    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
-    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
-    trust-store: ${SERVER_SSL_KEY_STORE}
-    trust-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
-    trust-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+#    key-store: ${SERVER_SSL_KEY_STORE}
+#    key-alias: ${SERVER_SSL_KEY_ALIAS}
+#    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+#    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
+#    trust-store: ${SERVER_SSL_KEY_STORE}
+#    trust-store-type: ${SERVER_SSL_KEY_STORE_TYPE}
+#    trust-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+    bundle:
+      jks:
+        server:
+          key:
+            alias: ${SERVER_SSL_KEY_ALIAS}
+          keystore:
+            location: ${SERVER_SSL_KEY_STORE}
+            password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+            type: ${SERVER_SSL_KEY_STORE_TYPE}
 
 logging:
   level:

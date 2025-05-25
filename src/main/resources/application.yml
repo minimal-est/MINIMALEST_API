@@ -14,3 +14,5 @@ springdoc:
 server:
   http2:
     enabled: true
+  ssl:
+    enabled: true
