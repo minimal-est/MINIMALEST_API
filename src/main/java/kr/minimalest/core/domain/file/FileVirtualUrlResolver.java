@@ -16,7 +16,7 @@ public class FileVirtualUrlResolver {
 
     public String resolve(String key) {
         hasKey(key);
-        return virtualRequestUrl + "?key=" + key;
+        return virtualRequestUrl + "/" + key;
     }
 
     private static void hasKey(String key) {

@@ -6,7 +6,7 @@ spring:
 
 file:
   proxy:
-    url: /api/file/proxy
+    url: cdn.minimalest.kr
 
 springdoc:
   paths-to-match: /api/**
