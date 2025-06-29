@@ -26,6 +26,8 @@ spring:
         static: ${AWS_S3_REGION}
       bucket:
         name: ${AWS_S3_BUCKET}
+      cloudfront:
+        domain: ${AWS_CLOUDFRONT_DOMAIN}
 
   servlet:
     multipart:

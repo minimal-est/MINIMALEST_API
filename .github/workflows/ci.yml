@@ -33,6 +33,7 @@ jobs:
           AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
           AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_CLOUDFRONT_DOMAIN: ${{ secrets.AWS_CLOUDFRONT_DOMAIN }}
           AWS_LAMBDA_THUMBNAIL_GENERATE_TRIGGER_URL: ${{ secrets.AWS_LAMBDA_THUMBNAIL_GENERATE_TRIGGER_URL }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           OAUTH_GOOGLE_CLIENT_ID: ${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}
@@ -91,6 +92,7 @@ jobs:
             AWS_S3_SECRET_KEY=${{ secrets.AWS_S3_SECRET_KEY }}
             AWS_S3_REGION=${{ secrets.AWS_S3_REGION }}
             AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+            AWS_CLOUDFRONT_DOMAIN=${{ secrets.AWS_CLOUDFRONT_DOMAIN }}
             AWS_LAMBDA_THUMBNAIL_GENERATE_TRIGGER_URL=${{ secrets.AWS_LAMBDA_THUMBNAIL_GENERATE_TRIGGER_URL }}
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             OAUTH_GOOGLE_CLIENT_ID=${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}
