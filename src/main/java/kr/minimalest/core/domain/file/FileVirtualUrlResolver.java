@@ -8,15 +8,15 @@ import org.springframework.util.StringUtils;
  */
 public class FileVirtualUrlResolver {
 
-    private final String virtualRequestUrl;
+    private final String domain;
 
-    public FileVirtualUrlResolver(String virtualRequestUrl) {
-        this.virtualRequestUrl = virtualRequestUrl;
+    public FileVirtualUrlResolver(String domain) {
+        this.domain = domain;
     }
 
     public String resolve(String key) {
         hasKey(key);
-        return virtualRequestUrl + "/" + key;
+        return "https://" + domain + "/" + key;
     }
 
     private static void hasKey(String key) {
