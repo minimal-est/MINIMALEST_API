@@ -44,4 +44,4 @@ ENV SERVER_SSL_KEY_STORE_TYPE=$SERVER_SSL_KEY_STORE_TYPE
 
 COPY build/libs/*.jar app.jar
 
-ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xms512m", "-Xmx512m", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
