@@ -42,7 +42,7 @@ public class PostHitService {
         return postHitCounter.getHitCount(postViewKey);
     }
 
-    public void clearIpChecker() {
+    public void clearIpCache() {
         ipManager.clear();
     }
 }
